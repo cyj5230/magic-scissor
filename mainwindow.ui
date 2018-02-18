@@ -19,9 +19,22 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>571</width>
+      <width>581</width>
       <height>301</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>310</y>
+      <width>80</width>
+      <height>15</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PushButton</string>
     </property>
    </widget>
   </widget>
@@ -40,12 +53,13 @@
     </property>
     <addaction name="separator"/>
     <addaction name="actionOpenImage"/>
-    <addaction name="actionClose"/>
+    <addaction name="actionCloseImage"/>
    </widget>
    <widget class="QMenu" name="menuEdge">
     <property name="title">
      <string>Edge</string>
     </property>
+    <addaction name="actionPixel"/>
    </widget>
    <widget class="QMenu" name="menuSize">
     <property name="title">
@@ -82,9 +96,14 @@
     <string>Open</string>
    </property>
   </action>
-  <action name="actionClose">
+  <action name="actionCloseImage">
    <property name="text">
     <string>Close</string>
+   </property>
+  </action>
+  <action name="actionPixel">
+   <property name="text">
+    <string>Pixel</string>
    </property>
   </action>
  </widget>

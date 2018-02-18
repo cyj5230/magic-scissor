@@ -21,10 +21,16 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QImage *rawImage;
     QImage *image;
+    int scaleFactor;
 
 private slots:
     void on_actionOpenImage_triggered();
+    void on_actionCloseImage_triggered();
+    void on_actionSize_x1_triggered();
+    void on_actionSize_x2_triggered();
+    void on_actionPixel_triggered();
 };
 
 #endif // MAINWINDOW_H
