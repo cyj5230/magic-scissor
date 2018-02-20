@@ -28,4 +28,4 @@ We use user-defined-class imArray to store image pixel information, which is def
     int width, height;
     }
 
-vecRed/vecGreen/vecBlue is a QVector object, with all the elements being integers. To get the pixel with coordinator (x, y), use vecX[x*width + y].
+vecRed/vecGreen/vecBlue is a QVector object, with all the elements being integers. To get the pixel with coordinator (x, y), use vecX[y*width + x].
