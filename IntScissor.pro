@@ -27,11 +27,15 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     ismenubar.cpp \
-    mousenow.cpp
+    mousenow.cpp \
+    fibheap.cpp \
+    iscissor.cpp
 
 HEADERS += \
         mainwindow.h \
-    imagearray.h
+    imagearray.h \
+    fibheap.h \
+    Node.h
 
 FORMS += \
         mainwindow.ui

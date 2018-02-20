@@ -40,7 +40,7 @@
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>17</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuIntelligent_Scissor">
@@ -57,6 +57,7 @@
     </property>
     <addaction name="actionPixel"/>
     <addaction name="actionmouseTrack"/>
+    <addaction name="actionliveWire"/>
    </widget>
    <widget class="QMenu" name="menuSize">
     <property name="title">
@@ -106,6 +107,11 @@
   <action name="actionmouseTrack">
    <property name="text">
     <string>mouseTrack</string>
+   </property>
+  </action>
+  <action name="actionliveWire">
+   <property name="text">
+    <string>LiveWire</string>
    </property>
   </action>
  </widget>
