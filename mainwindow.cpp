@@ -8,8 +8,10 @@
 // include user-defined cpp files
 #include "ismenubar.cpp"
 #include "mousenow.cpp"
+#include "iscissor.cpp"
 
 #include "imagearray.h"
+#include "Node.h"
 
 // include qt libs
 #include <QMouseEvent>
