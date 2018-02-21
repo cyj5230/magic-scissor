@@ -13,6 +13,6 @@
 
 void MainWindow::mouseInfo()
 {
-    ui->statusBar->showMessage(mouseMsg);
+    //ui->statusBar->showMessage(mouseMsg);
 }
 

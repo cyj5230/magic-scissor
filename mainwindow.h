@@ -11,7 +11,7 @@
 #include <QVector>
 #include <QGraphicsSceneMouseEvent>
 #include <QMouseEvent>
-#include "Node.h"
+#include "node.h"
 #include "fibheap.h"
 
 
@@ -28,6 +28,7 @@ public:
     void mouseNow(QMouseEvent *event);
     void initNodeBuffer(Node* nodes, QImage *image);
     void liveWireDP(int seedX, int seedY, Node* nodes, int expanded);
+    void mouseInfo();
 //    void minPath(FibHeap* path, int freePtX, int freePtY, Node* nodes, int width, int height);
 //    void seedSnap(int& x, int& y, QImage *image, int width, int height);
 
