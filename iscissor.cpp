@@ -75,7 +75,7 @@ void MainWindow::liveWireDP(int seedX, int seedY, Node *nodes, int expanded)
     int width = image->width();
     int height = image->height();
 
-    FibHeap<Node> pq;
+    FibHeap pq;
     Node* seed = &NODE(nodes, seedX, seedY, width);
     //set the total cost of seed to be zero
     //make seed the root of the minimum path tree ( pointing to NULL )
@@ -120,7 +120,7 @@ void MainWindow::liveWireDP(int seedX, int seedY, Node *nodes, int expanded)
                             nbNode->prevNode = minCostNode;
 
                             //update the total cost of r in pq
-                            pq.DecreaseKey(nbNode, nbNode->getPQIndex());
+                            pq.DecreaseKey(nbNode,nbNode);
                         }
                     }
                 }
