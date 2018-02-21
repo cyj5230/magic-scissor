@@ -5,9 +5,10 @@
 
 #include <QVector>
 #include <QImage>
-#include "Node.h"
+#include "node.h"
 #include "fibheap.h"
 #include "math.h"
+#include <assert.h>
 
 //define the length of 8 links
 const double linkLength[8] = {1.0, sqrt(2), 1.0, sqrt(2), 1.0, sqrt(2), 1.0, sqrt(2)};
@@ -76,26 +77,26 @@ void MainWindow::liveWireDP(int seedX, int seedY, Node *nodes, int expanded)
     int height = image->height();
 
     FibHeap pq;
-    Node* seed = &NODE(nodes, seedX, seedY, width);
+    Node* seed = &(NODE(nodes, seedX, seedY, width));
     //set the total cost of seed to be zero
     //make seed the root of the minimum path tree ( pointing to NULL )
-    seed->totalCost = 0;
+    seed->SetCostValue(0);
     seed->prevNode = NULL;
-    initNodeState(nodes, width, height);
 
     pq.Insert(seed);
 
     //while pq is not empty
     while (pq.GetNumNodes()!=0) {
-        Node minCostNode = pq.ExtractMin();
-        minCostNode.state = EXPANDED;
+        Node* minCostNode;
+        minCostNode = (Node*)pq.ExtractMin();
+        minCostNode->state = EXPANDED;
 
         for(int link = 0; link < 8; link++){
             int osX, osY;
-            minCostNode.nbrOffset(osX, osY, link);
+            minCostNode->nbrOffset(osX, osY, link);
 
-            int nbX = minCostNode.column + osX;
-            int nbY = minCostNode.row + osY;
+            int nbX = minCostNode->column + osX;
+            int nbY = minCostNode->row + osY;
 
             if((nbX >= 0 && nbX < width) && (nbY >= 0 && nbY < height)){
                 Node* nbNode = &(NODE(nodes, nbX, nbY, width));
@@ -106,21 +107,22 @@ void MainWindow::liveWireDP(int seedX, int seedY, Node *nodes, int expanded)
                         nbNode->prevNode = minCostNode;
 
                         //set the total cost of r to be the sum of the total cost of q and link cost from q to r as its total cost
-                        nbNode->totalCost = minCostNode.totalCost + minCostNode.linkCost[link];
+                        nbNode->SetCostValue(minCostNode->totalCost + minCostNode->linkCost[link]);
 
                         pq.Insert(nbNode);
                         nbNode->state = ACTIVE;
                     }
                     else{
-                        double tmpCost = minCostNode.totalCost + minCostNode.linkCost[link];
+                        double tmpCost = minCostNode->totalCost + minCostNode->linkCost[link];
                         if(tmpCost < nbNode->totalCost){
-                            nbNode->totalCost = tmpCost;
 
                             //update q to be the predecessor of r ( for the minimum path tree )
                             nbNode->prevNode = minCostNode;
 
-                            //update the total cost of r in pq
-                            pq.DecreaseKey(nbNode,nbNode);
+                            //update the total cost of r in pq                            
+                            nbNode->SetCostValue(tmpCost);
+                            //not match here
+                            pq.DecreaseKey(minCostNode, *nbNode);
                         }
                     }
                 }

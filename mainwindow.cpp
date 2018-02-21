@@ -11,7 +11,7 @@
 #include "iscissor.cpp"
 
 #include "imagearray.h"
-#include "Node.h"
+#include "node.h"
 #include  "fibheap.h"
 
 // include qt libs
