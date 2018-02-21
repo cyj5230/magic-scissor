@@ -12,6 +12,7 @@
 
 #include "imagearray.h"
 #include "Node.h"
+#include  "fibheap.h"
 
 // include qt libs
 #include <QMouseEvent>

@@ -29,7 +29,8 @@ SOURCES += \
     ismenubar.cpp \
     mousenow.cpp \
     fibheap.cpp \
-    iscissor.cpp
+    iscissor.cpp \
+    node.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,3 +40,5 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui
+
+# INCLUDEPATH += "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.12.25827\include"
