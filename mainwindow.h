@@ -8,8 +8,11 @@
 #include <QFileDialog>
 #include <QMouseEvent>
 #include <QPoint>
+#include <QVector>
 #include <QGraphicsSceneMouseEvent>
 #include <QMouseEvent>
+#include "node.h"
+#include "fibheap.h"
 
 
 namespace Ui {
@@ -23,6 +26,12 @@ class MainWindow : public QMainWindow
 public:
     bool eventFilter(QObject *watched, QEvent *event);
     void mouseNow(QMouseEvent *event);
+    void initNodeBuffer(Node* nodes, QImage *image);
+    void liveWireDP(int seedX, int seedY, Node* nodes, int expanded);
+    void mouseInfo();
+//    void minPath(FibHeap* path, int freePtX, int freePtY, Node* nodes, int width, int height);
+//    void seedSnap(int& x, int& y, QImage *image, int width, int height);
+
     // constructor functions
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -39,6 +48,7 @@ private slots:
     void on_actionSize_x1_triggered();
     void on_actionSize_x2_triggered();
     void on_actionPixel_triggered();
+    void on_actionLiveWire_triggered();
 };
 
 #endif // MAINWINDOW_H
