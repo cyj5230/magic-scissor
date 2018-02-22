@@ -60,6 +60,10 @@ void MainWindow::on_actionPixel_triggered()
     ui->statusBar->showMessage(statusMessage);
 }
 
+void MainWindow::on_actionLiveWire_triggered()
+{
+
+}
 
 
 

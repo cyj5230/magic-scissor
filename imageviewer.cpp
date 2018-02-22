@@ -3,3 +3,13 @@
 #include <QPoint>
 
 
+
+imageViewer::imageViewer(QWidget *parent)
+{
+
+}
+
+imageViewer::~imageViewer()
+{
+
+}

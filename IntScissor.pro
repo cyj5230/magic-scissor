@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2018-02-12T20:14:49
+# Project created by QtCreator 2018-02-21T23:14:09
 #
 #-------------------------------------------------
 
@@ -26,12 +26,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
+    fibheap.cpp \
+    imageviewer.cpp \
+    iscissor.cpp \
     ismenubar.cpp \
-    mousenow.cpp
+    mouseinfo.cpp \
+    mousenow.cpp \
+    node.cpp
 
 HEADERS += \
         mainwindow.h \
-    imagearray.h
+    fibheap.h \
+    imagearray.h \
+    imageviewer.h \
+    mouseinfo.h \
+    ui_mainwindow.h \
+    node.h
 
 FORMS += \
         mainwindow.ui

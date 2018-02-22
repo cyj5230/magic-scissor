@@ -15,7 +15,7 @@ public:
     ~imArray();
 
 private:
-    double width, height;
+    int width, height;
     QVector<int> vecRed;
     QVector<int> vecGreen;
     QVector<int> vecBlue;
