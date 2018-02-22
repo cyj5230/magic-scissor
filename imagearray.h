@@ -12,6 +12,9 @@ class imArray
 public:
 
     explicit imArray(QImage *image);
+    int getRed(int vecIndex){return vecRed[vecIndex];}
+    int getGreen(int vecIndex){return vecGreen[vecIndex];}
+    int getBlue(int vecIndex){return vecBlue[vecIndex];}
     ~imArray();
 
 private:
@@ -36,6 +39,11 @@ imArray::imArray(QImage *image)
             this->vecRed.append(qRed(pixelInfo));
         }
     }
+}
+
+imArray::~imArray()
+{
+
 }
 
 #endif // IMAGEARRAY_H
