@@ -29,8 +29,8 @@ public:
     void initNodeBuffer(Node* nodes, QImage *image);
     void liveWireDP(int seedX, int seedY, Node* nodes, int expanded);
     void mouseInfo();
-//    void minPath(FibHeap* path, int freePtX, int freePtY, Node* nodes, int width, int height);
-//    void seedSnap(int& x, int& y, QImage *image, int width, int height);
+    void minPath(FibHeap* path, int inputX, int inputY, Node* nodes, int width, int height);
+    void MakeCostGraph(QImage *costGraph, const Node* nodes, const QImage *image, int width, int height);
 
     // constructor functions
     explicit MainWindow(QWidget *parent = 0);

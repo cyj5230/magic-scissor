@@ -29,7 +29,7 @@ int  Node::operator <(FibHeapNode& RHS)
     return totalCost < ((Node&) RHS).totalCost ? 1 : 0;
 }
 
-void Node::nbrOffset(int& osX, int& osY, int linkIndex)
+void Node::nbrOffset(int osX, int osY, int linkIndex)
 {
     //to locate the offset of neighbors
     /*

@@ -18,17 +18,17 @@ public:
     int column, row;
     int pqIndex;
 
-    Node() : FibHeapNode() { prevNode = nullptr; state = INITIAL;};
+    Node() : FibHeapNode() { prevNode = nullptr; state = INITIAL;}
 
     virtual void operator =(FibHeapNode& RHS);
     virtual int  operator ==(FibHeapNode& RHS);
     virtual int  operator <(FibHeapNode& RHS);
 
     virtual void operator =(double NewTotalCost);
-    double GetCostValue() { return totalCost; };
-    void SetCostValue(double incost) { totalCost = incost; };
+    double GetCostValue() { return totalCost; }
+    void SetCostValue(double incost) { totalCost = incost; }
 
-    void nbrOffset(int& osX, int& osY, int linkIndex);
+    void nbrOffset(int osX, int osY, int linkIndex);
     int getPQIndex() const;
     int& getPQIndex();
 };
