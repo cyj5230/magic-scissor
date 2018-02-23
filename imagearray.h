@@ -37,6 +37,9 @@ public:
     // output functions
     int getHeight(){return(this->height);}
     int getWidth(){return(this->width);}
+    int getRed(int loc){return vecRed.takeAt(loc);}
+    int getGreen(int loc){return vecGreen.takeAt(loc);}
+    int getBlue(int loc){return vecBlue.takeAt(loc);}
 
 private:
     QImage *img ;
