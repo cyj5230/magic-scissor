@@ -37,12 +37,15 @@ public:
     void drawTempEdge();
     void drawPix(int x, int y);
 
+    QGraphicsScene *imgscene = new QGraphicsScene;
+
     // constructor functions
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
 protected:
-    void imageSizeChange(int scaleFactor);
+    void imageSizeChange(double scaleFactor);
+    void tempPath(int spx, int spy, int epx, int epy);
 
 private:
     Ui::MainWindow *ui;
@@ -56,6 +59,8 @@ private:
     imArray imgarray = imArray();
     QString imgFileName;
     bool undoDisabled = true;
+    bool finishScissor = true;
+
 
 private slots:
 

@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QRgb>
 #include <QVector>
+#include <QCursor>
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
@@ -18,12 +19,12 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
             (event->type() == QEvent::MouseMove)||
             (event->type() == QEvent::MouseButtonDblClick) ||
             (event->type() == QEvent::MouseTrackingChange);
+    QMouseEvent *mouseEvent = static_cast<QMouseEvent*> (event);
+    QPoint mousePos = mouseEvent->pos();
     if(watched == ui->graphicsView && isMouseEvent){
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*> (event);
-        QPoint mousePos = mapFromParent( mouseEvent->pos());
-        ui->statusBar->showMessage(QString("%1").arg(mousePos.x()));
-        switch (event->type()) {
-        case QEvent::MouseButtonPress:
+        qDebug() << "clicked on the image at " << mouseEvent->pos().x() << mouseEvent->pos().y();
+        if(finishScissor){
             if(lastx >= 0){
                 lastx = startx; lasty = starty;
                 if(!undoDisabled){
@@ -32,20 +33,15 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
             }else{
                 startx = mousePos.x(); starty = mousePos.y();
             }
-            drawPix(mousePos.x(), mousePos.y());
-            break;
-        case QEvent::MouseMove:
-            mousex = mousePos.x(); mousey = mousePos.y();
-            break;
-        case QEvent::MouseButtonRelease:
+        }else{
             endx = mousePos.x(); endy = mousePos.y();
-            break;
-        case QEvent::MouseButtonDblClick:
+            tempPath(startx, starty, endx, endy);
             undoDisabled = true;
-            break;
-        default:
-            break;
         }
+    }
+    if(watched == imgscene){
+        ui->statusBar->showMessage(QString("%1, %2").arg(mousePos.x()).arg(mousePos.y()));
+        mousex = mousePos.x(); mousey = mousePos.y();
     }
     return false;
 }
@@ -58,9 +54,9 @@ void MainWindow::drawPix(int x, int y)
             mkimage->setPixel(x+w, y+h, Qt::red);
         }
     }
-    QGraphicsScene *scene = new QGraphicsScene;
-    scene->addPixmap(QPixmap::fromImage(*mkimage));
-    ui->graphicsView->setScene(scene);
+    imgscene->clear();
+    imgscene->addPixmap(QPixmap::fromImage(*mkimage));
+    ui->graphicsView->setScene(imgscene);
     ui->graphicsView->resize(image->width() + 10, image->height() + 10);
 }
 
@@ -77,9 +73,9 @@ void MainWindow::drawEdge()
             }
         }
     }
-    QGraphicsScene *scene = new QGraphicsScene;
-    scene->addPixmap(QPixmap::fromImage(*mkimage));
-    ui->graphicsView->setScene(scene);
+    imgscene->clear();
+    imgscene->addPixmap(QPixmap::fromImage(*mkimage));
+    ui->graphicsView->setScene(imgscene);
     ui->graphicsView->resize(image->width() + 10, image->height() + 10);
 }
 
@@ -87,12 +83,26 @@ void MainWindow::toEdgeVec()
 {
     for(int h = 20; h < 180; h++){
         for(int w = -20; w< 20; w++){
-            imgarray.vecEdge.replace(h* imgarray.getWidth() + h + w, true);
+            imgarray.vecEdge[h* imgarray.getWidth() + h + w]  = true;
+            //imgarray.vecEdge.replace(h* imgarray.getWidth() + h + w, true);
         }
     }
     drawEdge();
 }
 
+void MainWindow::tempPath(int spx, int spy, int epx, int epy)
+{
+    int startAt = (spy + 1) * image->width() + spx +1;
+    int infAt = (spy + 1) * image->width() + epx + 1;
+    int endAt = (epy + 1) * image->width() + epy + 1;
+    for( int w = startAt; w <= infAt; w ++){
+        imgarray.vecEdge[(spy + 1) * image->width() + w] = true;
+    }
+    for( int h = spy; h <= epy; h++ ){
+        imgarray.vecEdge[epx + 1 + h * image->width()] = true;
+    }
+    drawEdge();
+}
 
 
 #endif
