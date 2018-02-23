@@ -4,13 +4,14 @@
 #include <QPixmap>
 #include <QVector>
 #include <QRgb>
+#include <QDebug>
 
 // currently only deal with rgb images
 
 class imArray
 {
 public:
-    QVector<bool> vecEdge, vecBorder;
+    QVector<bool> vecEdge, vecBorder, vecTempEdge, vecTempBorder;
     //void edgeline(QImage *image);
     //void edgeborder(QImage *image);
     // input functions
@@ -29,6 +30,8 @@ public:
                 this->vecBorder.append(false);
             }
         }
+        qDebug() << "Image Size: " << this->width << "x" << this->height ;
+        qDebug() << vecEdge.takeAt(29665);
     }
     void setEdge(){
         vecEdge.replace(66, true);
