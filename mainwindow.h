@@ -42,6 +42,8 @@ private:
     Ui::MainWindow *ui;
     QImage *rawImage;
     QImage *image;
+    QImage *mkimage;
+    int mousex, mousey;
 
 private slots:
 
