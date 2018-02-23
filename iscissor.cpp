@@ -48,7 +48,8 @@ void assignCoords(Node *nodes, int imgWidth, int imgHeight)
 void computeD(Node *nodes, QImage *image, int imgWidth, int imgHeight)
 {
     for(int link = 0; link < 8; link++){
-        imArray imageArray(image);
+        imArray imageArray;
+        imageArray.setImage(image);
         for(int x = 0; x < imgWidth;x++){
             for(int y = 0; y < imgHeight; y++){
                 int nodeIndex = y * imgWidth + x;
