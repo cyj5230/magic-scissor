@@ -30,7 +30,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->resize(ui->centralWidget->size());
     ui->centralWidget->setMouseTracking(true);
     ui->graphicsView->setMouseTracking(true);
-
     this->setCentralWidget(ui->graphicsView);
     ui->graphicsView->installEventFilter(this);
 
