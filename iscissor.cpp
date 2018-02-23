@@ -243,7 +243,7 @@ double getMaxD(Node *nodes, int imgWidth, int imgHeight)
 }
 
 void computeCost(Node *nodes, int imgWidth, int imgHeight, double maxD)
-{    
+{
     double length = 1.0000;
     for(int x = 0; x < imgWidth; x++){
         for(int y = 0; y < imgHeight; y++){
@@ -322,7 +322,7 @@ void MainWindow::liveWireDP(int seedX, int seedY, Node *nodes, int expanded)
                             //update q to be the predecessor of r ( for the minimum path tree )
                             nbNode->prevNode = minCostNode;
 
-                            //update the total cost of r in pq                            
+                            //update the total cost of r in pq
                             nbNode->SetCostValue(tmpCost);
 
                             //still not sure how to use

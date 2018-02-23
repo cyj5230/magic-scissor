@@ -34,14 +34,14 @@
 // the key value.  For comparison operators, the function FHN_Cmp() should
 // appear first.  If it returns 0, then keys can be compared as normal.
 // The following indicates what the three most common operators must do
-// based on the return value of FHN_Cmp() 
+// based on the return value of FHN_Cmp()
 //
 // For ==, if zero returned, then compare keys
 //	   if non-zero X returned, then return 0
 // For <,  if zero returned, then compare keys
 //         if non-zero X returned, then return X<0?1:0
 // For >,  if zero returned, then compare keys
-//         if non-zero X returned, then return X>0?1:0   
+//         if non-zero X returned, then return X>0?1:0
 //***************************************************************************
 
 #include <stdlib.h>
@@ -113,14 +113,14 @@ void FibHeapNode::FHN_Assign(FibHeapNode& RHS)
 // For <,  if zero returned, then compare keys
 //         if non-zero X returned, then return X<0?1:0
 // For >,  if zero returned, then compare keys
-//         if non-zero X returned, then return X>0?1:0    
+//         if non-zero X returned, then return X>0?1:0
 //=========================================================
 
 int  FibHeapNode::FHN_Cmp(FibHeapNode& RHS)
 {
      if (NegInfinityFlag)
-	 return RHS.NegInfinityFlag ? 0 : -1;
-     return RHS.NegInfinityFlag ? 1 : 0; 
+     return RHS.NegInfinityFlag ? 0 : -1;
+     return RHS.NegInfinityFlag ? 1 : 0;
 }
 
 //========================================================================
@@ -148,7 +148,7 @@ int  FibHeapNode::operator <(FibHeapNode& RHS)
 int X;
 
      if ((X=FHN_Cmp(RHS)) != 0)
-	  return X < 0 ? 1 : 0;
+      return X < 0 ? 1 : 0;
      // Key compare goes here in derived classes
      return 0;
 }
@@ -160,7 +160,7 @@ int X;
 void FibHeapNode::Print()
 {
      if (NegInfinityFlag)
-	 cout << "-inf.";
+     cout << "-inf.";
 }
 
 //***************************************************************************
@@ -190,7 +190,7 @@ FibHeapNode *Temp;
          {
              Temp = ExtractMin();
              delete Temp;
-	 }
+     }
      }
 }
 
@@ -212,26 +212,26 @@ void FibHeap::Insert(FibHeapNode *NewNode)
 
 // If the heap is currently empty, then new node becomes singleton
 // circular root list
- 
+
      if (MinRoot == NULL)
-	 MinRoot = NewNode->Left = NewNode->Right = NewNode;
+     MinRoot = NewNode->Left = NewNode->Right = NewNode;
 
      else
      {
 // Pointers from NewNode set to insert between MinRoot and MinRoot->Right
 
          NewNode->Right = MinRoot->Right;
-	 NewNode->Left = MinRoot;
+     NewNode->Left = MinRoot;
 
-// Set Pointers to NewNode  
+// Set Pointers to NewNode
 
-	 NewNode->Left->Right = NewNode;
+     NewNode->Left->Right = NewNode;
          NewNode->Right->Left = NewNode;
 
 // The new node becomes new MinRoot if it is less than current MinRoot
 
          if (*NewNode < *MinRoot)
-	     MinRoot = NewNode;
+         MinRoot = NewNode;
      }
 
 // We have one more node in the heap, and it is a tree on the root list
@@ -266,19 +266,19 @@ FibHeapNode *Min1, *Min2, *Next1, *Next2;
 // nodes on the opposite chains.  Conceptually, it looks like the way
 // two bubbles join to form one larger bubble.  They meet at one point
 // of contact, then expand out to make the bigger circle.
- 
+
      Min1->Right = Next2;
      Next2->Left = Min1;
      Min2->Right = Next1;
      Next1->Left = Min2;
 
 // Choose the new minimum for the heap
- 
+
      if (*Min2 < *Min1)
          MinRoot = Min2;
 
 // Set the amortized analysis statistics and size of the new heap
-                   
+
      NumNodes += OtherHeap->NumNodes;
      NumMarkedNodes += OtherHeap->NumMarkedNodes;
      NumTrees += OtherHeap->NumTrees;
@@ -325,7 +325,7 @@ FibHeap *ChildHeap = NULL;
      NumNodes --;
      if (Result->Mark)
      {
-	 NumMarkedNodes --;
+     NumMarkedNodes --;
          Result->Mark = 0;
      }
      Result->Degree = 0;
@@ -335,8 +335,8 @@ FibHeap *ChildHeap = NULL;
 
      if (Result->Child == NULL)
      {
-	 if (MinRoot == Result)
-	     MinRoot = NULL;
+     if (MinRoot == Result)
+         MinRoot = NULL;
      }
 
 // If MinRoot==Result then there was only one root tree, so the
@@ -350,7 +350,7 @@ FibHeap *ChildHeap = NULL;
 // new temporary heap, which is then merged by Union() onto the
 // root list of this heap.
 
-     else 
+     else
      {
          ChildHeap = new FibHeap();
          ChildHeap->MinRoot = Result->Child;
@@ -359,7 +359,7 @@ FibHeap *ChildHeap = NULL;
 // Complete the disassociation of the Result node from the heap
 
      if (Result->Child != NULL)
-	 Result->Child->Parent = NULL;
+     Result->Child->Parent = NULL;
      Result->Child = Result->Parent = NULL;
 
 // If there was a child list, then we now merge it with the
@@ -433,10 +433,10 @@ int Result;
      if (Result == OK)
      {
          if (GetHeapOwnership())
-	      delete theNode;
-	 else theNode->NegInfinityFlag = 0;
+          delete theNode;
+     else theNode->NegInfinityFlag = 0;
      }
-         
+
      return Result;
 }
 
@@ -445,7 +445,7 @@ int Result;
 //
 // Used internally for debugging purposes.  The function prints the key
 // value for each node along the root list, then it calls itself on each
-// child list.   
+// child list.
 //========================================================================
 
 void FibHeap::Print(FibHeapNode *Tree, FibHeapNode *theParent)
@@ -456,44 +456,44 @@ FibHeapNode* Temp = NULL;
 
      Temp = Tree;
      do {
-		if (Temp->Left == NULL)
-		    cout << "(Left is NULL)";
-		Temp->Print();
-		if (Temp->Parent != theParent)
-		    cout << "(Parent is incorrect)";
-		if (Temp->Right == NULL)
-		     cout << "(Right is NULL)";
-		else if (Temp->Right->Left != Temp)
-			 cout << "(Error in left link left) ->";
-		else cout << " <-> ";
+        if (Temp->Left == NULL)
+            cout << "(Left is NULL)";
+        Temp->Print();
+        if (Temp->Parent != theParent)
+            cout << "(Parent is incorrect)";
+        if (Temp->Right == NULL)
+             cout << "(Right is NULL)";
+        else if (Temp->Right->Left != Temp)
+             cout << "(Error in left link left) ->";
+        else cout << " <-> ";
 
-		Temp = Temp->Right;
+        Temp = Temp->Right;
 
-		if (kbhit() && getch() == 27)
-		{
-			cout << "Hit a key to resume or ESC to break\n";
-			if (getch() == 27)
+        if (kbhit() && getch() == 27)
+        {
+            cout << "Hit a key to resume or ESC to break\n";
+            if (getch() == 27)
                 break;
-		}
+        }
      } while (Temp != NULL && Temp != Tree);
      cout << '\n';
 
      Temp = Tree;
      do {
-	cout << "Children of ";
-	Temp->Print();
-	cout << ": ";
-	if (Temp->Child == NULL)
-	     cout << "NONE\n";
+    cout << "Children of ";
+    Temp->Print();
+    cout << ": ";
+    if (Temp->Child == NULL)
+         cout << "NONE\n";
         else Print(Temp->Child, Temp);
-	Temp = Temp->Right;
+    Temp = Temp->Right;
      } while (Temp!=NULL && Temp != Tree);
 
      if (theParent == NULL)
      {
      char ch;
 
-	 cout << "Done Printing.  Hit a key.\n";
+     cout << "Done Printing.  Hit a key.\n";
          cin >> ch;
      }
 }
@@ -559,7 +559,7 @@ short d;
 //cout << "Top of Consolidate's loop\n";
 //Print(w);
 
-	x = w;
+    x = w;
         d = x->Degree;
         w = w->Right;
 
@@ -569,16 +569,16 @@ short d;
         while (A[d] != NULL)
         {
              y = A[d];
-	     if (*y < *x)
-		 _Exchange(x, y);
+         if (*y < *x)
+         _Exchange(x, y);
              if (w == y) w = y->Right;
              _Link(y, x);
              A[d] = NULL;
              d++;
 //cout << "After a round of Linking\n";
 //Print(x);
-	}
-	A[d] = x;
+    }
+    A[d] = x;
 
      } while (w != NULL);
 
@@ -602,7 +602,7 @@ void FibHeap::_Link(FibHeapNode *y, FibHeapNode *x)
 // Remove node y from root list
 
      if (y->Right != NULL)
-	 y->Right->Left = y->Left;
+     y->Right->Left = y->Left;
      if (y->Left != NULL)
          y->Left->Right = y->Right;
      NumTrees--;
@@ -615,7 +615,7 @@ void FibHeap::_Link(FibHeapNode *y, FibHeapNode *x)
 // If node x has no children, then list y is its new child list
 
      if (x->Child == NULL)
-	 x->Child = y;
+     x->Child = y;
 
 // Otherwise, node y must be added to node x's child list
 
@@ -658,7 +658,7 @@ void FibHeap::_Cut(FibHeapNode *x, FibHeapNode *y)
      if (y->Child == x)
          y->Child = x->Right;
      if (y->Child == x)
-	 y->Child = NULL;
+     y->Child = NULL;
 
      y->Degree --;
 
@@ -675,7 +675,7 @@ void FibHeap::_Cut(FibHeapNode *x, FibHeapNode *y)
 // a cascading cut), it means that one child subtree has been lost; if a
 // second subtree is lost later during another cascading cut, then we move
 // the node to the root list so that it can be re-balanced on the next
-// consolidate. 
+// consolidate.
 //===========================================================================
 
 void FibHeap::_CascadingCut(FibHeapNode *y)
@@ -694,7 +694,7 @@ FibHeapNode *z = y->Parent;
          {
              _Cut(y, z);
              y = z;
-	     z = y->Parent;
+         z = y->Parent;
          }
      }
 }
