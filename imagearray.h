@@ -10,40 +10,50 @@
 class imArray
 {
 public:
-
-    explicit imArray(QImage *image);
-    int getRed(int vecIndex){return vecRed[vecIndex];}
-    int getGreen(int vecIndex){return vecGreen[vecIndex];}
-    int getBlue(int vecIndex){return vecBlue[vecIndex];}
-    ~imArray();
-
-private:
-    int width, height;
-    QVector<int> vecRed;
-    QVector<int> vecGreen;
-    QVector<int> vecBlue;
-};
-
-
-
-imArray::imArray(QImage *image)
-{
-    this->width = image->width();
-    this->height = image->height();
-    for(int haxis = 0; haxis < this->height; haxis++){
-        QRgb* line = (QRgb*)image->scanLine(haxis);
-        for(int waxis = 0; waxis < this->width; waxis++){
-            QRgb pixelInfo = line[waxis];
-            this->vecBlue.append(qBlue(pixelInfo));
-            this->vecGreen.append(qGreen(pixelInfo));
-            this->vecRed.append(qRed(pixelInfo));
+    QVector<bool> vecEdge, vecBorder;
+    //void edgeline(QImage *image);
+    //void edgeborder(QImage *image);
+    // input functions
+    void setImage(QImage *image){
+        this->img = image;
+        this->width = (int)image->width();
+        this->height = (int)image->height();
+        for(int haxis = 0; haxis < this->height; haxis++){
+            QRgb* line = (QRgb*)image->scanLine(haxis);
+            for(int waxis = 0; waxis < this->width; waxis++){
+                QRgb pixelInfo = line[waxis];
+                this->vecBlue.append(qBlue(pixelInfo));
+                this->vecGreen.append(qGreen(pixelInfo));
+                this->vecRed.append(qRed(pixelInfo));
+                this->vecEdge.append(false);
+                this->vecBorder.append(false);
+            }
         }
     }
-}
+    void setEdge(){
+        vecEdge.replace(66, true);
+    }
 
-imArray::~imArray()
+    // output functions
+    int getHeight(){return(this->height);}
+    int getWidth(){return(this->width);}
+
+private:
+    QImage *img ;
+    int width, height;
+    QVector<int> vecRed, vecGreen, vecBlue;
+};
+
+/*
+void imArray::edgeline(QImage *image)
 {
 
 }
+
+void imArray::edgeborder(QImage *image)
+{
+
+}
+*/
 
 #endif // IMAGEARRAY_H

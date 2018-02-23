@@ -32,6 +32,8 @@ public:
     void minPath(FibHeap* path, int inputX, int inputY, Node* nodes, int width, int height);
     void MakeCostGraph(QImage *costGraph, const Node* nodes, const QImage *image, int width, int height);
 
+    void drawPix(int x, int y);
+
     // constructor functions
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
