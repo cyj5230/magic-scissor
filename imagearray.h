@@ -15,6 +15,9 @@ public:
     int getRed(int vecIndex){return vecRed[vecIndex];}
     int getGreen(int vecIndex){return vecGreen[vecIndex];}
     int getBlue(int vecIndex){return vecBlue[vecIndex];}
+    void setRed(int vecIndex, int r){vecRed[vecIndex] = r;}
+    void setGreen(int vecIndex, int g){vecGreen[vecIndex] = g;}
+    void setBlue(int vecIndex, int b){vecBlue[vecIndex] = b;}
     ~imArray();
 
 private:
