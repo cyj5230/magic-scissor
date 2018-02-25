@@ -344,11 +344,13 @@ std::list MainWindow::minPath(int inputX, int inputY, Node* nodes)
     //insert a list of nodes along the minimum cost path from the seed node to the input node
     int inputNodeIndex = inputY * this->image->width() + inputX;
     Node* node = &(nodes[inputNodeIndex]);
-    std::list
+    std::list<std::pair<int, int>> minPathList;
     while(node->prevNode){
         Node* prevNode = node->prevNode;
-        int prevNodeCol = prevNode->column;
-        int prevNodeRow = prevNode->row;
+        int prevCol = prevNode->column;
+        int prevRow = prevNode->row;
+        std::pair<int, int> prevCoords = std::make_pair(prevCol, prevRow);
+        minPathList.push_back();
     }
 }
 

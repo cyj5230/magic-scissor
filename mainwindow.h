@@ -29,7 +29,7 @@ public:
     void initNodeBuffer(Node* nodes, QImage *image);
     void liveWireDP(int seedX, int seedY, Node* nodes);
     void mouseInfo();
-    void minPath(FibHeap* path, int inputX, int inputY, Node* nodes, int width);
+    std::list<std::pair<int, int>> minPath(int inputX, int inputY, Node* nodes);
     void MakeCostGraph(QImage *costGraph, Node* nodes, QImage *image, int width, int height);
 
     void toEdgeVec();
