@@ -247,7 +247,7 @@ double getMaxD(Node *nodes, int imgWidth, int imgHeight)
 }
 
 void computeCost(Node *nodes, int imgWidth, int imgHeight, double maxD)
-{    
+{
     double length = 1.0000;
     for(int x = 0; x < imgWidth; x++){
         for(int y = 0; y < imgHeight; y++){

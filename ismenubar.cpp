@@ -19,7 +19,7 @@ void MainWindow::on_actionOpenImage_triggered()
     if (fileName != ""){
         if (image->load(fileName)){
             rawImage->load(fileName);
-            mkimage->load(fileName);\
+            mkimage->load(fileName);
             imgarray.setImage(image);
             imgscene->clear();
             imgscene->addPixmap(QPixmap::fromImage(*image));

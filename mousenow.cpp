@@ -24,49 +24,81 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
     if(watched == ui->graphicsView && event->type() == QEvent::MouseButtonPress){
         QMouseEvent *mouseEvent = (QMouseEvent*) event;
         qDebug() << "clicked on the image at " << mouseEvent->pos().x() << mouseEvent->pos().y();
-        if(finishScissor){
-            if(lastx >= 0){
-                lastx = startx; lasty = starty;
-                if(!undoDisabled){
-                    startx = endx; starty = endy;
-                }
-            }else{
-                startx = mouseEvent->pos().x() -5; starty = mouseEvent->pos().y() -5;
+        if(!scissorRunning){
+            scissorRunning = true;
+            startx= mouseEvent->pos().x() -5; starty = mouseEvent->pos().y() -5;
+            if(!useTempPath){
+                initNodeBuffer(nodes, image);
+                liveWireDP(startx, starty, nodes);
             }
-            finishScissor = false;
-            imgscene->clear();
-            imgscene->addPixmap(QPixmap::fromImage(*mkimage));
-            ui->graphicsView->setScene(imgscene);
-            ui->graphicsView->show();
+            if(restartScissor){
+                *mkimage = image->copy();
+                *tempImage = image->copy();
+                imgarray.resetImage();
+                imgscene->clear();
+                imgscene->addPixmap(QPixmap::fromImage(*mkimage));
+                ui->graphicsView->setScene(imgscene);
+                ui->graphicsView->show();
+            }
         }else{
-            endx = mouseEvent->pos().x() -5;
-            endy = mouseEvent->pos().y() -5;
+            endx = mouseEvent->pos().x() -5; endy = mouseEvent->pos().y() -5;
             canDraw =
                     (startx > 0 && startx < image->width()) &&
                     (starty > 0 && starty < image->height()) &&
                     (endx > 0 && endx < image->width()) &&
                     (endy > 0 && endy < image->height());
             if(canDraw){
-                tempPath(startx, starty, endx, endy, false);
-                finishScissor = true;
-                undoDisabled = true;
+                finishScissor = foundArea(endx, endy);
+                if(useTempPath){
+                    tempPath(startx, starty, endx, endy, false);
+                }else{
+                    toEdgeVec(endx, endy, nodes, false);
+                }
+                if(finishScissor){
+                    scissorRunning = false;
+                    restartScissor = true;
+                }else{
+                    startx = endx; starty = endy;
+                    if(!useTempPath){liveWireDP(startx, starty, nodes);}
+                }
+                imgscene->clear();
+                imgscene->addPixmap(QPixmap::fromImage(*mkimage));
+                ui->graphicsView->setScene(imgscene);
+                ui->graphicsView->show();
             }
         }
     }else if(watched == imgscene){
         QPoint mousePos = mapFromGlobal(QCursor::pos());
         mousex = mousePos.x() -5;
         mousey = mousePos.y() - 50;
-        ui->statusBar->showMessage(QString("%1, %2").arg(mousex).arg(mousey));
         canDraw =
                 (startx > 0 && startx < image->width()) &&
                 (starty > 0 && starty < image->height()) &&
                 (mousex > 0 && mousex < image->width()) &&
-                (mousey > 0 && mousey < image->height()) &&
-                (endx > 0 && endx < image->width()) &&
-                (endy > 0 && endy < image->height());
-        if(canDraw && !finishScissor){
+                (mousey > 0 && mousey < image->height());
+        if(canDraw && scissorRunning){
+            ui->statusBar->showMessage(QString("%1, %2").arg(mousex).arg(mousey));
             *tempImage = mkimage->copy();
-            tempPath(endx, endy, mousex, mousey, true);
+            foundArea(mousex, mousey);
+            tempPath(startx, starty, mousex, mousey, true);
+        }
+    }
+    return false;
+}
+
+bool MainWindow::foundArea(int x, int y)
+{
+    int loc;
+    for(int h = -5; h <= 5; h++){
+        for(int w = -5; w <= 5; w++){
+            loc = imgarray.vecloc(x+w, y+h);
+            if(loc < 0 || loc >= imgarray.vecEdge.count()){continue;}
+            if(imgarray.vecEdge.at(loc)){
+                mousex = x + w; mousey = y + h;
+                endx = x + w; endy = y + h;
+                ui->statusBar->showMessage(QString("%1, %2, closed!").arg(mousex).arg(mousey));
+                return true;
+            }
         }
     }
     return false;
@@ -140,14 +172,28 @@ void MainWindow::drawTempEdge()
     ui->graphicsView->resize(image->width() + 10, image->height() + 10);
 }
 
-void MainWindow::toEdgeVec()
+void MainWindow::toEdgeVec(int inputX, int inputY, Node* nodes, bool realtime = false)
 {
-    for(int h = 20; h < 180; h++){
-        for(int w = -20; w< 20; w++){
-            imgarray.vecEdge[h* imgarray.getWidth() + h + w]  = true;
+    std::list<std::pair<int, int>> wPairList; int loc;
+    std::pair<int, int> locpair;
+    wPairList = MainWindow::minPath(inputX, inputY, nodes);
+    while(wPairList.empty()){
+        locpair = wPairList.front();
+        wPairList.pop_front();
+        loc = imgarray.vecloc(locpair.first, locpair.second);
+        if(realtime){
+            imgarray.vecTempEdge[loc] = true;
+        }else {
+            imgarray.vecEdge[loc] = true;
         }
     }
-    drawEdge();
+    if(genBorder(realtime)){
+        if(realtime){
+            drawTempEdge();
+        }else{
+            drawEdge();
+        }
+    }
 }
 
 bool MainWindow::genBorder(bool temp = false)
@@ -162,7 +208,7 @@ bool MainWindow::genBorder(bool temp = false)
                     if(loc <= 0 || loc > pixnum){continue;}
                     isBorder = (!imgarray.vecEdge.at(loc)) && (!imgarray.vecBorder.at(loc));
                     if(isBorder){
-                        imgarray.vecBorder[loc - 1] = true;
+                        imgarray.vecBorder[loc] = true;
                     }
                 }
             }
@@ -173,7 +219,7 @@ bool MainWindow::genBorder(bool temp = false)
                     if(loc <= 0 || loc > pixnum){continue;}
                     isBorder = (!imgarray.vecTempEdge.at(loc)) && (!imgarray.vecTempBorder.at(loc));
                     if(isBorder){
-                        imgarray.vecTempBorder[loc - 1] = true;
+                        imgarray.vecTempBorder[loc] = true;
                     }
                 }
             }
@@ -269,9 +315,6 @@ void MainWindow::tempPath(int spx, int spy, int epx, int epy, bool realtime = fa
             drawEdge();
         }
     }
-
-
-
 }
 
 

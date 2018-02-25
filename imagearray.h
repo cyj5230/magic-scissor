@@ -39,6 +39,14 @@ public:
         qDebug() << "has alpha channel:" <<image->hasAlphaChannel() << "image format:" << image->format();
         qDebug() << "pixel number:" << vecEdge.count() << vecBorder.count();
     }
+    bool resetImage(){
+        for(int index = 0; index < this->vecEdge.count(); index++){
+            this->vecEdge[index]       = false;
+            this->vecBorder[index]     = false;
+            this->vecTempEdge[index]   = false;
+            this->vecTempBorder[index] = false;
+        }
+    }
 
     // output functions
     int getHeight(){return(this->height);}
