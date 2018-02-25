@@ -49,7 +49,8 @@ void assignCoords(Node *nodes, int imgWidth, int imgHeight)
 void computeD(Node *nodes, QImage *image, int imgWidth, int imgHeight)
 {
     for(int link = 0; link < 8; link++){
-        imArray imageArray(image);
+        imArray imageArray;
+        imageArray.setImage(image);
         for(int x = 0; x < imgWidth;x++){
             for(int y = 0; y < imgHeight; y++){
                 int nodeIndex = y * imgWidth + x;
@@ -367,7 +368,8 @@ void MainWindow::MakeCostGraph(QImage *costGraph, Node* nodes, QImage *image, in
 //    int dgX = 3;
 //    int dgY = 3 * graphWidth;
 
-    imArray imageArray(image);
+    imArray imageArray;
+    imageArray.setImage(image);
 
     for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {

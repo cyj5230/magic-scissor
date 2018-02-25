@@ -13,7 +13,7 @@
 #include <QMouseEvent>
 #include "node.h"
 #include "fibheap.h"
-
+#include "imagearray.h"
 
 namespace Ui {
 class MainWindow;
@@ -32,14 +32,35 @@ public:
     void minPath(FibHeap* path, int inputX, int inputY, Node* nodes, int width);
     void MakeCostGraph(QImage *costGraph, Node* nodes, QImage *image, int width, int height);
 
+    void toEdgeVec();
+    void drawEdge();
+    void drawTempEdge();
+    void drawPix(int x, int y);
+
+    QGraphicsScene *imgscene = new QGraphicsScene;
+
     // constructor functions
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+protected:
+    void imageSizeChange(double scaleFactor);
+    bool genBorder(bool temp);
+    void tempPath(int spx, int spy, int epx, int epy, bool realtime);
+
 private:
     Ui::MainWindow *ui;
-    QImage *rawImage;
-    QImage *image;
+    QImage *rawImage, *image;
+    QImage *mkimage = new QImage;
+    QImage *tempImage = new QImage;
+    int mousex, mousey;
+    int lastx = -1, lasty = -1;
+    int startx, starty, endx, endy;
+    imArray imgarray = imArray();
+    QString imgFileName;
+    bool undoDisabled = true;
+    bool finishScissor = true;
+
 
 private slots:
 
@@ -49,6 +70,7 @@ private slots:
     void on_actionSize_x2_triggered();
     void on_actionPixel_triggered();
     void on_actionLiveWire_triggered();
+    void on_actiontest_triggered();
 };
 
 #endif // MAINWINDOW_H

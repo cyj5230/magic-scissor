@@ -30,11 +30,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->resize(ui->centralWidget->size());
     ui->centralWidget->setMouseTracking(true);
     ui->graphicsView->setMouseTracking(true);
+    this->setCentralWidget(ui->graphicsView);
     ui->graphicsView->installEventFilter(this);
 
     this->setWindowTitle("Intelligent Scissor");
     this->image = new QImage();
     this->rawImage = new QImage();
+
     // QT will create on_actionX_triggered function automatically, and connect it with QAction::triggered()
     // This autoconnection will be created by declaring and implementing a slot with the name that follows the below rules:
     //      void on_<widget name="">_<signal name="">(<signal parameters="">);
@@ -47,3 +49,4 @@ MainWindow::~MainWindow()
 }
 
 #endif // MAINWINDOW
+
