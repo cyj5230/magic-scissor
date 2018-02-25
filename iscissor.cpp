@@ -27,6 +27,8 @@ void MainWindow::initNodeBuffer(Node* nodes, QImage* image)
 {
     int imgWidth = image->width();
     int imgHeight = image->height();
+    int numNodes = imgWidth * imgHeight;
+    nodes = new Node[numNodes]();
 
     assignCoords(nodes, imgWidth, imgHeight);
     computeD(nodes, image, imgWidth, imgHeight);
