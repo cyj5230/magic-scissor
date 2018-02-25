@@ -119,7 +119,6 @@ void MainWindow::drawTempEdge()
     QColor edgeColor = QColor::fromRgb(255,  0,  0); // red
     QColor borderColor = QColor::fromRgb(0,  255,  0); // green
     int shouldTake = 1; bool canSetEdge = false; bool canSetBorder;
-    qDebug() << "in drawTempEdge";
     for(int h = 0; h < image->height(); h++){
         for(int w = 0; w < image->width(); w++){
             if (shouldTake < imgarray.vecEdge.count()){
@@ -155,11 +154,6 @@ bool MainWindow::genBorder(bool temp = false)
 {
     bool isBorder = false; int loc = 0; int pixnum;
     pixnum = this->imgarray.vecBorder.count();
-    if (this->imgarray.vecEdge.count() != this->imgarray.vecBorder.count()){
-        qDebug() << "???" << this->imgarray.vecEdge.count() << this->imgarray.vecBorder.count();
-        return false;
-    }
-    qDebug() << "in genBorder";
     for(int index = 0; index < pixnum; index++){
         if (!temp && imgarray.vecEdge.at(index)){
             for(int w = -5; w < 6; w++){
@@ -188,16 +182,15 @@ bool MainWindow::genBorder(bool temp = false)
     return true;
 }
 
-void MainWindow::tempPath(int spx, int spy, int epx, int epy, bool temp = false)
+void MainWindow::tempPath(int spx, int spy, int epx, int epy, bool realtime = false)
 {
     int loc = 0;
-    qDebug() << "in tempPath" << spx << spy << epx << epy;
     if(spx >= epx){
         if(spy >= epy){
             //l->u, r->l
             for(int x = 0; x <= spx - epx; x++){
                 loc = imgarray.vecloc(epx + x, spy);
-                if(temp){
+                if(realtime){
                     imgarray.vecTempEdge[loc] = true;
                 }else{
                     imgarray.vecEdge[loc] = true;
@@ -205,17 +198,17 @@ void MainWindow::tempPath(int spx, int spy, int epx, int epy, bool temp = false)
             }
             for(int y = 0; y <= spy - epy; y++){
                 loc = imgarray.vecloc(epx, epy + y);
-                if(temp){
+                if(realtime){
                     imgarray.vecTempEdge[loc] = true;
                 }else{
                     imgarray.vecEdge[loc] = true;
                 }
             }
         }else{
-            //u->l, r->l
+            //l->u, r->l
             for(int x = 0; x <= spx - epx; x++){
                 loc = imgarray.vecloc(epx + x, epy);
-                if(temp){
+                if(realtime){
                     imgarray.vecTempEdge[loc] = true;
                 }else{
                     imgarray.vecEdge[loc] = true;
@@ -223,7 +216,7 @@ void MainWindow::tempPath(int spx, int spy, int epx, int epy, bool temp = false)
             }
             for(int y = 0; y <= epy - spy; y++){
                 loc = imgarray.vecloc(spx, spy + y);
-                if(temp){
+                if(realtime){
                     imgarray.vecTempEdge[loc] = true;
                 }else{
                     imgarray.vecEdge[loc] = true;
@@ -232,18 +225,18 @@ void MainWindow::tempPath(int spx, int spy, int epx, int epy, bool temp = false)
         }
     }else{
         if(spy >= epy){
-            //u->l, r->l
-            for(int x = 0; x <= spx - epx; x++){
-                loc = imgarray.vecloc(spx + x, spy);
-                if(temp){
+            //l->u, l->r
+            for(int x = 0; x <= epx - spx; x++){
+                loc = imgarray.vecloc(spx + x, epy);
+                if(realtime){
                     imgarray.vecTempEdge[loc] = true;
                 }else{
                     imgarray.vecEdge[loc] = true;
                 }
             }
             for(int y = 0; y <= spy - epy; y++){
-                loc = imgarray.vecloc(epx, epy + y);
-                if(temp){
+                loc = imgarray.vecloc(spx, epy + y);
+                if(realtime){
                     imgarray.vecTempEdge[loc] = true;
                 }else{
                     imgarray.vecEdge[loc] = true;
@@ -251,9 +244,9 @@ void MainWindow::tempPath(int spx, int spy, int epx, int epy, bool temp = false)
             }
         }else{
             //u->l, l->r
-            for(int x = 0; x <= spx - epx; x++){
-                loc = imgarray.vecloc(epx + x, epy);
-                if(temp){
+            for(int x = 0; x <= epx - spx; x++){
+                loc = imgarray.vecloc(spx + x, spy);
+                if(realtime){
                     imgarray.vecTempEdge[loc] = true;
                 }else{
                     imgarray.vecEdge[loc] = true;
@@ -261,7 +254,7 @@ void MainWindow::tempPath(int spx, int spy, int epx, int epy, bool temp = false)
             }
             for(int y = 0; y <= epy - spy; y++){
                 loc = imgarray.vecloc(epx, spy + y);
-                if(temp){
+                if(realtime){
                     imgarray.vecTempEdge[loc] = true;
                 }else{
                     imgarray.vecEdge[loc] = true;
@@ -269,8 +262,8 @@ void MainWindow::tempPath(int spx, int spy, int epx, int epy, bool temp = false)
             }
         }
     }
-    if(genBorder(temp)){
-        if(temp){
+    if(genBorder(realtime)){
+        if(realtime){
             drawTempEdge();
         }else{
             drawEdge();

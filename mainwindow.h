@@ -27,10 +27,10 @@ public:
     bool eventFilter(QObject *watched, QEvent *event);
     void mouseNow(QMouseEvent *event);
     void initNodeBuffer(Node* nodes, QImage *image);
-    void liveWireDP(int seedX, int seedY, Node* nodes, int expanded);
+    void liveWireDP(int seedX, int seedY, Node* nodes);
     void mouseInfo();
-    void minPath(FibHeap* path, int inputX, int inputY, Node* nodes, int width, int height);
-    void MakeCostGraph(QImage *costGraph, const Node* nodes, const QImage *image, int width, int height);
+    void minPath(FibHeap* path, int inputX, int inputY, Node* nodes, int width);
+    void MakeCostGraph(QImage *costGraph, Node* nodes, QImage *image, int width, int height);
 
     void toEdgeVec();
     void drawEdge();
@@ -46,7 +46,7 @@ public:
 protected:
     void imageSizeChange(double scaleFactor);
     bool genBorder(bool temp);
-    void tempPath(int spx, int spy, int epx, int epy, bool temp);
+    void tempPath(int spx, int spy, int epx, int epy, bool realtime);
 
 private:
     Ui::MainWindow *ui;

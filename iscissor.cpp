@@ -20,6 +20,7 @@ double getMaxD (Node* nodes, int imgWidth, int imgHeight);
 void computeCost (Node* nodes, int imgWidth, int imgHeight, double maxD);
 void initNodeState(Node* nodes, int width, int height);
 int* nbrOffset(int linkIndex);
+void costToRGB(QImage* costGraph, int x, int y, double cost);
 
 //initialize the nodes in the node buffer
 void MainWindow::initNodeBuffer(Node* nodes, QImage* image)
@@ -224,6 +225,7 @@ int* nbrOffset(int linkIndex)
     default:
         break;
     }
+    return os;
 }
 
 double getMaxD(Node *nodes, int imgWidth, int imgHeight)
@@ -243,7 +245,7 @@ double getMaxD(Node *nodes, int imgWidth, int imgHeight)
 }
 
 void computeCost(Node *nodes, int imgWidth, int imgHeight, double maxD)
-{
+{    
     double length = 1.0000;
     for(int x = 0; x < imgWidth; x++){
         for(int y = 0; y < imgHeight; y++){
@@ -273,7 +275,7 @@ inline Node& NODE(Node* n, int i, int j, int width)
     return *(n + j * width + i);
 }
 
-void MainWindow::liveWireDP(int seedX, int seedY, Node *nodes, int expanded)
+void MainWindow::liveWireDP(int seedX, int seedY, Node *nodes)
 {
     int width = image->width();
     int height = image->height();
@@ -294,7 +296,8 @@ void MainWindow::liveWireDP(int seedX, int seedY, Node *nodes, int expanded)
         minCostNode->state = EXPANDED;
 
         for(int link = 0; link < 8; link++){
-            int osX, osY;
+            int osX = 0;
+            int osY = 0;
             minCostNode->nbrOffset(osX, osY, link);
 
             int nbX = minCostNode->column + osX;
@@ -325,7 +328,6 @@ void MainWindow::liveWireDP(int seedX, int seedY, Node *nodes, int expanded)
                             //update the total cost of r in pq
                             nbNode->SetCostValue(tmpCost);
 
-                            //still not sure how to use
                             //Update(DecreaseKey)
                             pq.DecreaseKey(nbNode, *nbNode);
                         }
@@ -337,16 +339,16 @@ void MainWindow::liveWireDP(int seedX, int seedY, Node *nodes, int expanded)
     }
 }
 
-void MainWindow::minPath(FibHeap* path, int inputX, int inputY, Node* nodes, int width, int height)
+void MainWindow::minPath(FibHeap* path, int inputX, int inputY, Node* nodes, int width)
 {
-    int inputNodeIndex = inputY * width + inputX;
-    Node* currentNode = &(nodes[inputNodeIndex]);
-    while(currentNode != nullptr){
-        //the input node should be the tail
-        //not sure here
-        //path->AddHead(currentNode);
-        currentNode = currentNode->prevNode;
-    }
+//    //insert a list of nodes along the minimum cost path from the seed node to the input node
+//    int inputNodeIndex = inputY * width + inputX;
+//    Node* currentNode = &(nodes[inputNodeIndex]);
+//    while(currentNode != nullptr){
+//        //after the procedure, the seed should be the head of path and the input code should be the tail
+//        path->Insert(currentNode);
+//        currentNode = currentNode->prevNode;
+//    }
 }
 
 void initNodeState(Node* nodes, int width, int height)
@@ -358,36 +360,75 @@ void initNodeState(Node* nodes, int width, int height)
         }
 }
 
-void MainWindow::MakeCostGraph(QImage *costGraph, const Node* nodes, const QImage *image, int width, int height)
+void MainWindow::MakeCostGraph(QImage *costGraph, Node* nodes, QImage *image, int width, int height)
 {
-    int graphWidth = width * 3;
-    int graphHeight = height * 3;
-    int dgX = 3;
-    int dgY = 3 * graphWidth;
+    //generate a cost graph from original image and node buffer with all the link costs
+//    int graphWidth = width * 3;
+//    int graphHeight = height * 3;
+//    int dgX = 3;
+//    int dgY = 3 * graphWidth;
+
+    imArray imageArray;
+    imageArray.setImage(image);
 
     for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
-                int nodeIndex = y*width + x;
-//                int imgIndex = 3 * nodeIndex;
-//                int costIndex = 3 * ((3 * j + 1) * graphWidth + (3 * i + 1));
+                int nodeIndex = y * width + x;
+                int newX = 3 * x + 1;
+                int newY = 3 * y + 1;
 
-//                const Node* node = nodes + nodeIndex;
-//                const unsigned char* pxl = img + imgIndex;
-//                unsigned char* cst = costGraph + costIndex;
+                Node node = nodes[nodeIndex];
+                int pixelR = imageArray.getRed(nodeIndex);
+                int pixelG = imageArray.getGreen(nodeIndex);
+                int pixelB = imageArray.getBlue(nodeIndex);
 
-//                cst[0] = pxl[0];
-//                cst[1] = pxl[1];
-//                cst[2] = pxl[2];
+                costGraph->setPixel(newX, newY, qRgb(pixelR, pixelG, pixelB));
 
-//                //r,g,b channels are grad info in seperate channels;
-//                DigitizeCost(cst	   + dgX, node->linkCost[0]);
-//                DigitizeCost(cst - dgY + dgX, node->linkCost[1]);
-//                DigitizeCost(cst - dgY      , node->linkCost[2]);
-//                DigitizeCost(cst - dgY - dgX, node->linkCost[3]);
-//                DigitizeCost(cst	   - dgX, node->linkCost[4]);
-//                DigitizeCost(cst + dgY - dgX, node->linkCost[5]);
-//                DigitizeCost(cst + dgY	   ,  node->linkCost[6]);
-//                DigitizeCost(cst + dgY + dgX, node->linkCost[7]);
+                //set the RGB value of the neighbors to the cost level
+                int *nb0 = new int;
+                int *nb1 = new int;
+                int *nb2 = new int;
+                int *nb3 = new int;
+                int *nb4 = new int;
+                int *nb5 = new int;
+                int *nb6 = new int;
+                int *nb7 = new int;
+
+                nb0 = nbrOffset(0);
+                nb1 = nbrOffset(1);
+                nb2 = nbrOffset(2);
+                nb3 = nbrOffset(3);
+                nb4 = nbrOffset(4);
+                nb5 = nbrOffset(5);
+                nb6 = nbrOffset(6);
+                nb7 = nbrOffset(7);
+
+                costToRGB(costGraph, newX + nb0[0], newY + nb0[1], node.linkCost[0]);
+                costToRGB(costGraph, newX + nb1[0], newY + nb1[1], node.linkCost[1]);
+                costToRGB(costGraph, newX + nb2[0], newY + nb2[1], node.linkCost[2]);
+                costToRGB(costGraph, newX + nb3[0], newY + nb3[1], node.linkCost[3]);
+                costToRGB(costGraph, newX + nb4[0], newY + nb4[1], node.linkCost[4]);
+                costToRGB(costGraph, newX + nb5[0], newY + nb5[1], node.linkCost[5]);
+                costToRGB(costGraph, newX + nb6[0], newY + nb6[1], node.linkCost[6]);
+                costToRGB(costGraph, newX + nb7[0], newY + nb7[1], node.linkCost[7]);
+
+                delete []nb0;
+                delete []nb1;
+                delete []nb2;
+                delete []nb3;
+                delete []nb4;
+                delete []nb5;
+                delete []nb6;
+                delete []nb7;
             }
     }
+}
+
+
+void costToRGB(QImage* costGraph, int x, int y, double cost)
+{
+    //set the rgb value of the pixel from 0 to 255
+    //based on the given cost
+    int costRGB = (int)(floor(__max(0.0, __min(255.0, cost))));
+    costGraph->setPixel(x, y, qRgb(costRGB, costRGB, costRGB));
 }
