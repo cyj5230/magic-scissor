@@ -339,17 +339,21 @@ void MainWindow::liveWireDP(int seedX, int seedY, Node *nodes)
     }
 }
 
-std::list MainWindow::minPath(int inputX, int inputY, Node* nodes)
+std::list<std::pair<int, int>> MainWindow::minPath(int inputX, int inputY, Node* nodes)
 {
     //insert a list of nodes along the minimum cost path from the seed node to the input node
     int inputNodeIndex = inputY * this->image->width() + inputX;
     Node* node = &(nodes[inputNodeIndex]);
-    std::list
+    std::list<std::pair<int, int>> minPathList;
     while(node->prevNode){
-        Node* prevNode = node->prevNode;
-        int prevNodeCol = prevNode->column;
-        int prevNodeRow = prevNode->row;
+        int col = node->column;
+        int row = node->row;
+        std::pair<int, int> coords = std::make_pair(col, row);
+        minPathList.push_front(coords);
+        node = node->prevNode;
     }
+
+    return minPathList;
 }
 
 void initNodeState(Node* nodes, int width, int height)
