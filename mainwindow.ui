@@ -80,7 +80,7 @@
     <property name="title">
      <string>Debug</string>
     </property>
-    <addaction name="actionPixel_node"/>
+    <addaction name="actionPixel_Node"/>
     <addaction name="actionCost_Graph"/>
     <addaction name="actionPath_Tree"/>
     <addaction name="actionMin_Path"/>
@@ -154,7 +154,7 @@
     <string>test</string>
    </property>
   </action>
-  <action name="actionPixel_node">
+  <action name="actionPixel_Node">
    <property name="text">
     <string>Pixel Node</string>
    </property>

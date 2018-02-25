@@ -46,6 +46,8 @@ public:
             this->vecTempEdge[index]   = false;
             this->vecTempBorder[index] = false;
         }
+        //only for debug
+        return false;
     }
 
     // output functions
