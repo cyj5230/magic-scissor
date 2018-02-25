@@ -36,9 +36,12 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowTitle("Intelligent Scissor");
     this->image = new QImage();
     this->rawImage = new QImage();
+<<<<<<< HEAD
     this->costGraph = new QImage();
     this->pixelNodes = new QImage();
     this->nodes = nullptr;
+=======
+>>>>>>> origin/master
 
     // QT will create on_actionX_triggered function automatically, and connect it with QAction::triggered()
     // This autoconnection will be created by declaring and implementing a slot with the name that follows the below rules:

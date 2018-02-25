@@ -29,11 +29,12 @@ public:
     void initNodeBuffer(Node* nodes, QImage *image);
     void liveWireDP(int seedX, int seedY, Node* nodes);
     void mouseInfo();
+    void minPath(FibHeap* path, int inputX, int inputY, Node* nodes, int width);
     std::list<std::pair<int, int>> minPath(int inputX, int inputY, Node* nodes);
     void makeCostGraph(QImage *costGraph, Node* nodes, int width, int height);
     void makePixelNodes(QImage *pixelNodes, int width, int height);
 
-    void toEdgeVec();
+    void toEdgeVec(int inputX, int inputY, Node* nodes, bool realtime);
     void drawEdge();
     void drawTempEdge();
     void drawPix(int x, int y);
@@ -48,21 +49,27 @@ protected:
     void imageSizeChange(double scaleFactor);
     bool genBorder(bool temp);
     void tempPath(int spx, int spy, int epx, int epy, bool realtime);
+    bool foundArea(int x, int y);
+    bool useTempPath = true;
 
 private:
     Ui::MainWindow *ui;
     QImage *rawImage, *image, *costGraph, *pixelNodes;
     QImage *mkimage = new QImage;
     QImage *tempImage = new QImage;
-    int mousex, mousey;
-    int lastx = -1, lasty = -1;
+    int mousex, mousey, wirex, wirey;
     int startx, starty, endx, endy;
     imArray imgarray = imArray();
     QString imgFileName;
-    bool undoDisabled = true;
-    bool finishScissor = true;
-    Node* nodes;
 
+    Node* nodes;
+    bool undoDisabled = true;
+
+
+
+    bool scissorRunning = false;
+    bool restartScissor = false;
+    bool finishScissor = false;
 
 private slots:
 
