@@ -45,14 +45,14 @@ public:
 
 protected:
     void imageSizeChange(double scaleFactor);
-    void tempPath(int spx, int spy, int epx, int epy);
+    bool genBorder(bool temp);
+    void tempPath(int spx, int spy, int epx, int epy, bool temp);
 
 private:
     Ui::MainWindow *ui;
-    QImage *rawImage;
-    QImage *image;
+    QImage *rawImage, *image;
     QImage *mkimage = new QImage;
-    QPixmap *mkpm = new QPixmap;
+    QImage *tempImage = new QImage;
     int mousex, mousey;
     int lastx = -1, lasty = -1;
     int startx, starty, endx, endy;
@@ -70,6 +70,7 @@ private slots:
     void on_actionSize_x2_triggered();
     void on_actionPixel_triggered();
     void on_actionLiveWire_triggered();
+    void on_actiontest_triggered();
 };
 
 #endif // MAINWINDOW_H

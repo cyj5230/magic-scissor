@@ -34,6 +34,10 @@ public:
     QAction *actionPixel;
     QAction *actionmouseTrack;
     QAction *actionliveWire;
+    QAction *actionSave_Mask;
+    QAction *actionSave_Contour;
+    QAction *actionundo;
+    QAction *actiontest;
     QWidget *centralWidget;
     QGraphicsView *graphicsView;
     QMenuBar *menuBar;
@@ -48,6 +52,7 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
         MainWindow->resize(1280, 720);
+        MainWindow->setMouseTracking(true);
         actionSize_x1 = new QAction(MainWindow);
         actionSize_x1->setObjectName(QStringLiteral("actionSize_x1"));
         actionSize_x2 = new QAction(MainWindow);
@@ -62,6 +67,14 @@ public:
         actionmouseTrack->setObjectName(QStringLiteral("actionmouseTrack"));
         actionliveWire = new QAction(MainWindow);
         actionliveWire->setObjectName(QStringLiteral("actionliveWire"));
+        actionSave_Mask = new QAction(MainWindow);
+        actionSave_Mask->setObjectName(QStringLiteral("actionSave_Mask"));
+        actionSave_Contour = new QAction(MainWindow);
+        actionSave_Contour->setObjectName(QStringLiteral("actionSave_Contour"));
+        actionundo = new QAction(MainWindow);
+        actionundo->setObjectName(QStringLiteral("actionundo"));
+        actiontest = new QAction(MainWindow);
+        actiontest->setObjectName(QStringLiteral("actiontest"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -69,6 +82,7 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
         centralWidget->setSizePolicy(sizePolicy);
+        centralWidget->setMouseTracking(true);
         graphicsView = new QGraphicsView(centralWidget);
         graphicsView->setObjectName(QStringLiteral("graphicsView"));
         graphicsView->setGeometry(QRect(6, 6, 711, 541));
@@ -76,7 +90,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1280, 26));
+        menuBar->setGeometry(QRect(0, 0, 1280, 17));
         menuIntelligent_Scissor = new QMenu(menuBar);
         menuIntelligent_Scissor->setObjectName(QStringLiteral("menuIntelligent_Scissor"));
         menuEdge = new QMenu(menuBar);
@@ -97,9 +111,13 @@ public:
         menuIntelligent_Scissor->addSeparator();
         menuIntelligent_Scissor->addAction(actionOpenImage);
         menuIntelligent_Scissor->addAction(actionCloseImage);
+        menuIntelligent_Scissor->addAction(actionSave_Mask);
+        menuIntelligent_Scissor->addAction(actionSave_Contour);
         menuEdge->addAction(actionPixel);
         menuEdge->addAction(actionmouseTrack);
         menuEdge->addAction(actionliveWire);
+        menuEdge->addAction(actionundo);
+        menuEdge->addAction(actiontest);
         menuSize->addAction(actionSize_x1);
         menuSize->addAction(actionSize_x2);
 
@@ -118,6 +136,10 @@ public:
         actionPixel->setText(QApplication::translate("MainWindow", "Pixel", nullptr));
         actionmouseTrack->setText(QApplication::translate("MainWindow", "mouseTrack", nullptr));
         actionliveWire->setText(QApplication::translate("MainWindow", "LiveWire", nullptr));
+        actionSave_Mask->setText(QApplication::translate("MainWindow", "Save Mask", nullptr));
+        actionSave_Contour->setText(QApplication::translate("MainWindow", "Save Contour", nullptr));
+        actionundo->setText(QApplication::translate("MainWindow", "undo", nullptr));
+        actiontest->setText(QApplication::translate("MainWindow", "test", nullptr));
         menuIntelligent_Scissor->setTitle(QApplication::translate("MainWindow", "File", nullptr));
         menuEdge->setTitle(QApplication::translate("MainWindow", "Edge", nullptr));
         menuSize->setTitle(QApplication::translate("MainWindow", "Size", nullptr));

@@ -67,6 +67,7 @@
     <addaction name="actionmouseTrack"/>
     <addaction name="actionliveWire"/>
     <addaction name="actionundo"/>
+    <addaction name="actiontest"/>
    </widget>
    <widget class="QMenu" name="menuSize">
     <property name="title">
@@ -136,6 +137,11 @@
   <action name="actionundo">
    <property name="text">
     <string>undo</string>
+   </property>
+  </action>
+  <action name="actiontest">
+   <property name="text">
+    <string>test</string>
    </property>
   </action>
  </widget>
