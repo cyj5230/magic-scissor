@@ -27,10 +27,8 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     fibheap.cpp \
-    imageviewer.cpp \
     iscissor.cpp \
     ismenubar.cpp \
-    mouseinfo.cpp \
     mousenow.cpp \
     node.cpp
 
@@ -38,10 +36,10 @@ HEADERS += \
         mainwindow.h \
     fibheap.h \
     imagearray.h \
-    imageviewer.h \
-    mouseinfo.h \
-    ui_mainwindow.h \
     node.h
 
 FORMS += \
         mainwindow.ui
+
+CONFIG += \
+    console
