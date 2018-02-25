@@ -60,6 +60,7 @@ private:
     QString imgFileName;
     bool undoDisabled = true;
     bool finishScissor = true;
+    Node* nodes;
 
 
 private slots:
