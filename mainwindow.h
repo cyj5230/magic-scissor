@@ -30,7 +30,8 @@ public:
     void liveWireDP(int seedX, int seedY, Node* nodes);
     void mouseInfo();
     std::list<std::pair<int, int>> minPath(int inputX, int inputY, Node* nodes);
-    void MakeCostGraph(QImage *costGraph, Node* nodes, QImage *image, int width, int height);
+    void makeCostGraph(QImage *costGraph, Node* nodes, int width, int height);
+    void makePixelNodes(QImage *pixelNodes, int width, int height);
 
     void toEdgeVec();
     void drawEdge();
@@ -50,7 +51,7 @@ protected:
 
 private:
     Ui::MainWindow *ui;
-    QImage *rawImage, *image;
+    QImage *rawImage, *image, *costGraph, *pixelNodes;
     QImage *mkimage = new QImage;
     QImage *tempImage = new QImage;
     int mousex, mousey;
@@ -72,6 +73,10 @@ private slots:
     void on_actionPixel_triggered();
     void on_actionLiveWire_triggered();
     void on_actiontest_triggered();
+    void on_actionPixel_Node_triggered();
+    void on_actionCost_Graph_triggered();
+//    void on_actionPath_Tree_triggered();
+//    void on_actionMin_Path_triggered();
 };
 
 #endif // MAINWINDOW_H

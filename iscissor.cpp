@@ -22,6 +22,7 @@ void initNodeState(Node* nodes, int width, int height);
 int* nbrOffset(int linkIndex);
 void costToRGB(QImage* costGraph, int x, int y, double cost);
 
+
 //initialize the nodes in the node buffer
 void MainWindow::initNodeBuffer(Node* nodes, QImage* image)
 {
@@ -367,31 +368,57 @@ void initNodeState(Node* nodes, int width, int height)
         }
 }
 
-void MainWindow::MakeCostGraph(QImage *costGraph, Node* nodes, QImage *image, int width, int height)
+/*
+ * Debug Mode:
+ * (a) pixel node
+ * (b) cost graph
+ * (c) path tree
+ * (d) min path
+*/
+
+//(a) pixel node
+void MainWindow::makePixelNodes(QImage *pixelNodes, int width, int height)
+{
+    //set all pixels to black
+    for (int i = 0; i < pixelNodes->width(); i++) {
+        for (int j = 0; j < pixelNodes->height(); j++) {
+            pixelNodes->setPixel(i, j, qRgb(0, 0, 0));
+        }
+    }
+
+    //Draw a cost graph with original image pixel colors at the center of each 3by3 window
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            int newX = 3 * x + 1;
+            int newY = 3 * y + 1;
+
+            int pixelIndex = imgarray.vecloc(x, y);
+            int pixelR = imgarray.getRed(pixelIndex);
+            int pixelG = imgarray.getGreen(pixelIndex);
+            int pixelB = imgarray.getBlue(pixelIndex);
+
+            pixelNodes->setPixel(newX, newY, qRgb(pixelR, pixelG, pixelB));
+        }
+    }
+}
+
+//(b) cost graph
+void MainWindow::makeCostGraph(QImage *costGraph, Node* nodes, int width, int height)
 {
     //generate a cost graph from original image and node buffer with all the link costs
-//    int graphWidth = width * 3;
-//    int graphHeight = height * 3;
-//    int dgX = 3;
-//    int dgY = 3 * graphWidth;
-
-    imArray imageArray;
-    imageArray.setImage(image);
-
-    for (int x = 0; x < width; ++x) {
-            for (int y = 0; y < height; ++y) {
+    for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 int nodeIndex = y * width + x;
                 int newX = 3 * x + 1;
                 int newY = 3 * y + 1;
 
                 Node node = nodes[nodeIndex];
-                int pixelR = imageArray.getRed(nodeIndex);
-                int pixelG = imageArray.getGreen(nodeIndex);
-                int pixelB = imageArray.getBlue(nodeIndex);
+                int pixelR = imgarray.getRed(nodeIndex);
+                int pixelG = imgarray.getGreen(nodeIndex);
+                int pixelB = imgarray.getBlue(nodeIndex);
 
                 costGraph->setPixel(newX, newY, qRgb(pixelR, pixelG, pixelB));
 
-                //set the RGB value of the neighbors to the cost level
                 int *nb0 = new int;
                 int *nb1 = new int;
                 int *nb2 = new int;
@@ -410,6 +437,7 @@ void MainWindow::MakeCostGraph(QImage *costGraph, Node* nodes, QImage *image, in
                 nb6 = nbrOffset(6);
                 nb7 = nbrOffset(7);
 
+                //set the RGB value of the neighbors to the cost level
                 costToRGB(costGraph, newX + nb0[0], newY + nb0[1], node.linkCost[0]);
                 costToRGB(costGraph, newX + nb1[0], newY + nb1[1], node.linkCost[1]);
                 costToRGB(costGraph, newX + nb2[0], newY + nb2[1], node.linkCost[2]);

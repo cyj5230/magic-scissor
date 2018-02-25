@@ -113,5 +113,37 @@ void MainWindow::on_actiontest_triggered()
     qDebug() << pixInfo.red() << pixInfo.green() << pixInfo.blue();
 }
 
+void MainWindow::on_actionCost_Graph_triggered()
+{
+    int graphWidth = image->width() * 3;
+    int graphHeight = image->height() * 3;
+    *costGraph = QPixmap(graphWidth, graphHeight).toImage();
 
+    makeCostGraph(costGraph, nodes, image->width(), image->height());
+
+    //display costgraph
+    imgscene->clear();
+    imgscene->addPixmap(QPixmap::fromImage(*costGraph));
+    imgscene->installEventFilter(this);
+    ui->graphicsView->setScene(imgscene);
+    ui->graphicsView->resize(image->width() + 10, image->height() + 10);
+    ui->graphicsView->show();
+}
+
+void MainWindow::on_actionPixel_Node_triggered()
+{
+    int graphWidth = image->width() * 3;
+    int graphHeight = image->height() * 3;
+    *pixelNodes = QPixmap(graphWidth, graphHeight).toImage();
+
+    makePixelNodes(pixelNodes, image->width(), image->height());
+
+    //display pixel nodes
+    imgscene->clear();
+    imgscene->addPixmap(QPixmap::fromImage(*pixelNodes));
+    imgscene->installEventFilter(this);
+    ui->graphicsView->setScene(imgscene);
+    ui->graphicsView->resize(image->width() + 10, image->height() + 10);
+    ui->graphicsView->show();
+}
 

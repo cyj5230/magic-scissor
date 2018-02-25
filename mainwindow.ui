@@ -46,7 +46,7 @@
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>17</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuIntelligent_Scissor">
@@ -76,9 +76,19 @@
     <addaction name="actionSize_x1"/>
     <addaction name="actionSize_x2"/>
    </widget>
+   <widget class="QMenu" name="menuDebug">
+    <property name="title">
+     <string>Debug</string>
+    </property>
+    <addaction name="actionPixel_node"/>
+    <addaction name="actionCost_Graph"/>
+    <addaction name="actionPath_Tree"/>
+    <addaction name="actionMin_Path"/>
+   </widget>
    <addaction name="menuIntelligent_Scissor"/>
    <addaction name="menuEdge"/>
    <addaction name="menuSize"/>
+   <addaction name="menuDebug"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -142,6 +152,26 @@
   <action name="actiontest">
    <property name="text">
     <string>test</string>
+   </property>
+  </action>
+  <action name="actionPixel_node">
+   <property name="text">
+    <string>Pixel Node</string>
+   </property>
+  </action>
+  <action name="actionCost_Graph">
+   <property name="text">
+    <string>Cost Graph</string>
+   </property>
+  </action>
+  <action name="actionPath_Tree">
+   <property name="text">
+    <string>Path Tree</string>
+   </property>
+  </action>
+  <action name="actionMin_Path">
+   <property name="text">
+    <string>Min Path</string>
    </property>
   </action>
  </widget>
