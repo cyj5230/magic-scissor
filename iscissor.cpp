@@ -19,7 +19,7 @@ void computeD (Node* nodes, QImage* image, int imgWidth, int imgHeight);
 double getMaxD (Node* nodes, int imgWidth, int imgHeight);
 void computeCost (Node* nodes, int imgWidth, int imgHeight, double maxD);
 void initNodeState(Node* nodes, int width, int height);
-int* nbrOffset(int linkIndex);
+void nbrOffset(int linkIndex, int* os);
 void costToRGB(QImage* costGraph, int x, int y, double cost);
 
 
@@ -29,12 +29,17 @@ void MainWindow::initNodeBuffer(Node* nodes, QImage* image)
     int imgWidth = image->width();
     int imgHeight = image->height();
     int numNodes = imgWidth * imgHeight;
-    nodes = new Node[numNodes]();
+    qDebug()<<"total nodes: "<<numNodes;
+    nodes = new Node[numNodes];
 
     assignCoords(nodes, imgWidth, imgHeight);
+    qDebug()<<"assginCoords done";
     computeD(nodes, image, imgWidth, imgHeight);
+    qDebug()<<"computeD done";
     double maxD = getMaxD(nodes, imgWidth, imgHeight);
+    qDebug()<<"get maxD:"<<maxD;
     computeCost(nodes, imgWidth, imgHeight, maxD);
+    qDebug()<<"computeCost done";
 }
 
 //return the row and column values of each node
@@ -61,120 +66,126 @@ void computeD(Node *nodes, QImage *image, int imgWidth, int imgHeight)
                 double dR, dG, dB;
                 if(link == 0 || link == 4){
                     //horizontal
-                    int *nb0 = new int;
-                    int *nb1 = new int;
-                    int *nb2 = new int;
-                    int *nb3 = new int;
+                    int** nb = new int*[4];
+                    for(int i = 0; i < 4; i++){
+                        nb[i] = new int[2];
+                    }
 
                     if(link == 0){
                         //D(link 0)=|(img(i,j-1) + img(i+1,j-1))/2 - (img(i,j+1) + img(i+1,j+1))/2|/2
-                        nb0 = nbrOffset(2);
-                        nb1 = nbrOffset(1);
-                        nb2 = nbrOffset(6);
-                        nb3 = nbrOffset(7);
+                        nbrOffset(2, nb[0]);
+                        nbrOffset(1, nb[1]);
+                        nbrOffset(6, nb[2]);
+                        nbrOffset(7, nb[3]);
                     }
                     else{
                         //D(link 4)=|(img(i,j-1) + img(i-1,j-1))/2 - (img(i,j+1) + img(i-1,j+1))/2|/2
-                        nb0 = nbrOffset(2);
-                        nb1 = nbrOffset(3);
-                        nb2 = nbrOffset(6);
-                        nb3 = nbrOffset(5);
+                        nbrOffset(2, nb[0]);
+                        nbrOffset(3, nb[1]);
+                        nbrOffset(6, nb[2]);
+                        nbrOffset(5, nb[3]);
                     }
-                    dR = abs((imageArray.getRed((y+nb0[1]) * imgWidth + (x+nb0[0]))
-                            + imageArray.getRed((y+nb1[1]) * imgWidth + (x+nb1[0])))/2
-                         - (imageArray.getRed((y+nb2[1]) * imgWidth + (x+nb2[0]))
-                            + imageArray.getRed((y+nb3[1]) * imgWidth + (x+nb3[0])))/2)/2;
 
-                    dG = abs((imageArray.getGreen((y+nb0[1]) * imgWidth + (x+nb0[0]))
-                            + imageArray.getGreen((y+nb1[1]) * imgWidth + (x+nb1[0])))/2
-                         - (imageArray.getGreen((y+nb2[1]) * imgWidth + (x+nb2[0]))
-                            + imageArray.getGreen((y+nb3[1]) * imgWidth + (x+nb3[0])))/2)/2;
+                    dR = abs((imageArray.getRed((y+nb[0][1]) * imgWidth + (x+nb[0][0]))
+                            + imageArray.getRed((y+nb[1][1]) * imgWidth + (x+nb[1][0])))/2
+                         - (imageArray.getRed((y+nb[2][1]) * imgWidth + (x+nb[2][0]))
+                            + imageArray.getRed((y+nb[3][1]) * imgWidth + (x+nb[3][0])))/2)/2;
 
-                    dB = abs((imageArray.getBlue((y+nb0[1]) * imgWidth + (x+nb0[0]))
-                            + imageArray.getBlue((y+nb1[1]) * imgWidth + (x+nb1[0])))/2
-                         - (imageArray.getBlue((y+nb2[1]) * imgWidth + (x+nb2[0]))
-                            + imageArray.getBlue((y+nb3[1]) * imgWidth + (x+nb3[0])))/2)/2;
+                    dG = abs((imageArray.getGreen((y+nb[0][1]) * imgWidth + (x+nb[0][0]))
+                            + imageArray.getGreen((y+nb[1][1]) * imgWidth + (x+nb[1][0])))/2
+                         - (imageArray.getGreen((y+nb[2][1]) * imgWidth + (x+nb[2][0]))
+                            + imageArray.getGreen((y+nb[3][1]) * imgWidth + (x+nb[3][0])))/2)/2;
 
-                    delete[] nb0;
-                    delete[] nb1;
-                    delete[] nb2;
-                    delete[] nb3;
+                    dB = abs((imageArray.getBlue((y+nb[0][1]) * imgWidth + (x+nb[0][0]))
+                            + imageArray.getBlue((y+nb[1][1]) * imgWidth + (x+nb[1][0])))/2
+                         - (imageArray.getBlue((y+nb[2][1]) * imgWidth + (x+nb[2][0]))
+                            + imageArray.getBlue((y+nb[3][1]) * imgWidth + (x+nb[3][0])))/2)/2;
+
+                    for(int i = 0; i < 4; i++){
+                        delete [] nb[i];
+                    }
+                    delete [] nb;
                 }
                 else if(link == 2 || link == 6){
                     //vertical
-                    int *nb0 = new int;
-                    int *nb1 = new int;
-                    int *nb2 = new int;
-                    int *nb3 = new int;
+                    int** nb = new int*[4];
+                    for(int i = 0; i < 4; i++){
+                        nb[i] = new int[2];
+                    }
 
                     if(link == 2){
                         //D(link 2)=|(img(i-1,j) + img(i-1,j-1))/2 - (img(i+1,j) + img(i+1,j-1))/2|/2
-                        nb0 = nbrOffset(4);
-                        nb1 = nbrOffset(3);
-                        nb2 = nbrOffset(0);
-                        nb3 = nbrOffset(1);
+                        nbrOffset(4, nb[0]);
+                        nbrOffset(3, nb[1]);
+                        nbrOffset(0, nb[2]);
+                        nbrOffset(1, nb[3]);
                     }
                     else{
                         //D(link 6)=|(img(i-1,j) + img(i-1,j+1))/2 - (img(i+1,j) + img(i+1,j+1))/2|/2
-                        nb0 = nbrOffset(4);
-                        nb1 = nbrOffset(5);
-                        nb2 = nbrOffset(0);
-                        nb3 = nbrOffset(7);
+                        nbrOffset(4, nb[0]);
+                        nbrOffset(5, nb[1]);
+                        nbrOffset(0, nb[2]);
+                        nbrOffset(7, nb[3]);
                     }
-                    dR = abs((imageArray.getRed((y+nb0[1]) * imgWidth + (x+nb0[0]))
-                            + imageArray.getRed((y+nb1[1]) * imgWidth + (x+nb1[0])))/2
-                         - (imageArray.getRed((y+nb2[1]) * imgWidth + (x+nb2[0]))
-                            + imageArray.getRed((y+nb3[1]) * imgWidth + (x+nb3[0])))/2)/2;
+                    dR = abs((imageArray.getRed((y+nb[0][1]) * imgWidth + (x+nb[0][0]))
+                            + imageArray.getRed((y+nb[1][1]) * imgWidth + (x+nb[1][0])))/2
+                         - (imageArray.getRed((y+nb[2][1]) * imgWidth + (x+nb[2][0]))
+                            + imageArray.getRed((y+nb[3][1]) * imgWidth + (x+nb[3][0])))/2)/2;
 
-                    dG = abs((imageArray.getGreen((y+nb0[1]) * imgWidth + (x+nb0[0]))
-                            + imageArray.getGreen((y+nb1[1]) * imgWidth + (x+nb1[0])))/2
-                         - (imageArray.getGreen((y+nb2[1]) * imgWidth + (x+nb2[0]))
-                            + imageArray.getGreen((y+nb3[1]) * imgWidth + (x+nb3[0])))/2)/2;
+                    dG = abs((imageArray.getGreen((y+nb[0][1]) * imgWidth + (x+nb[0][0]))
+                            + imageArray.getGreen((y+nb[1][1]) * imgWidth + (x+nb[1][0])))/2
+                         - (imageArray.getGreen((y+nb[2][1]) * imgWidth + (x+nb[2][0]))
+                            + imageArray.getGreen((y+nb[3][1]) * imgWidth + (x+nb[3][0])))/2)/2;
 
-                    dB = abs((imageArray.getBlue((y+nb0[1]) * imgWidth + (x+nb0[0]))
-                            + imageArray.getBlue((y+nb1[1]) * imgWidth + (x+nb1[0])))/2
-                         - (imageArray.getBlue((y+nb2[1]) * imgWidth + (x+nb2[0]))
-                            + imageArray.getBlue((y+nb3[1]) * imgWidth + (x+nb3[0])))/2)/2;
+                    dB = abs((imageArray.getBlue((y+nb[0][1]) * imgWidth + (x+nb[0][0]))
+                            + imageArray.getBlue((y+nb[1][1]) * imgWidth + (x+nb[1][0])))/2
+                         - (imageArray.getBlue((y+nb[2][1]) * imgWidth + (x+nb[2][0]))
+                            + imageArray.getBlue((y+nb[3][1]) * imgWidth + (x+nb[3][0])))/2)/2;
 
-                    delete[] nb0;
-                    delete[] nb1;
-                    delete[] nb2;
-                    delete[] nb3;
+                    for(int i = 0; i < 4; i++){
+                        delete [] nb[i];
+                    }
+                    delete [] nb;
                 }
                 else{
                     //diagonal
-                    int *nb0 = new int;
-                    int *nb1 = new int;
+                    int** nb = new int*[2];
+                    for(int i = 0; i < 2; i++){
+                        nb[i] = new int[2];
+                    }
+
                     if(link == 1){
                         //D(link 1)=|img(i+1,j) - img(i,j-1)|/sqrt(2)
-                        nb0 = nbrOffset(0);
-                        nb1 = nbrOffset(2);
+                        nbrOffset(0, nb[0]);
+                        nbrOffset(2, nb[1]);
                     }
                     else if(link == 3){
                         //D(link 3)=|img(i,j-1) - img(i-1,j)|/sqrt(2)
-                        nb0 = nbrOffset(2);
-                        nb1 = nbrOffset(4);
+                        nbrOffset(2, nb[0]);
+                        nbrOffset(4, nb[1]);
 
                     }
                     else if(link == 5){
                         //D(link 5)=|img(i-1,j) - img(i,j+1)|/sqrt(2)
-                        nb0 = nbrOffset(4);
-                        nb1 = nbrOffset(6);
+                        nbrOffset(4, nb[0]);
+                        nbrOffset(6, nb[1]);
                     }
                     else{
                         //D(link 7)=|img(i,j+1) - img(i+1,j)|/sqrt(2)
-                        nb0 = nbrOffset(6);
-                        nb1 = nbrOffset(0);
+                        nbrOffset(6, nb[0]);
+                        nbrOffset(0, nb[1]);
                     }
-                    dR = abs(imageArray.getRed((y+nb0[1]) * imgWidth + (x+nb0[0]))
-                            - imageArray.getRed((y+nb1[1]) * imgWidth + (x+nb1[0])))/sqrt(2);
-                    dG = abs(imageArray.getGreen((y+nb0[1]) * imgWidth + (x+nb0[0]))
-                            - imageArray.getGreen((y+nb1[1]) * imgWidth + (x+nb1[0])))/sqrt(2);
-                    dB = abs(imageArray.getBlue((y+nb0[1]) * imgWidth + (x+nb0[0]))
-                            - imageArray.getBlue((y+nb1[1]) * imgWidth + (x+nb1[0])))/sqrt(2);
+                    dR = abs(imageArray.getRed((y+nb[0][1]) * imgWidth + (x+nb[0][0]))
+                            - imageArray.getRed((y+nb[1][1]) * imgWidth + (x+nb[1][0])))/sqrt(2);
+                    dG = abs(imageArray.getGreen((y+nb[0][1]) * imgWidth + (x+nb[0][0]))
+                            - imageArray.getGreen((y+nb[1][1]) * imgWidth + (x+nb[1][0])))/sqrt(2);
+                    dB = abs(imageArray.getBlue((y+nb[0][1]) * imgWidth + (x+nb[0][0]))
+                            - imageArray.getBlue((y+nb[1][1]) * imgWidth + (x+nb[1][0])))/sqrt(2);
 
-                    delete[] nb0;
-                    delete[] nb1;
+                    for(int i = 0; i < 2; i++){
+                        delete [] nb[i];
+                    }
+                    delete [] nb;
                 }
                 //D(link) = sqrt( (DR(link)*DR(link)+DG(link)*DG(link)+DB(link)*DB(link))/3 )
                 nodes[nodeIndex].linkCost[link] = sqrt((dR * dR + dG * dG + dB * dB)/3);
@@ -183,7 +194,7 @@ void computeD(Node *nodes, QImage *image, int imgWidth, int imgHeight)
     }
 }
 
-int* nbrOffset(int linkIndex)
+void nbrOffset(int linkIndex, int* os)
 {
     //to locate the offset of neighbors
     /*
@@ -191,44 +202,42 @@ int* nbrOffset(int linkIndex)
      * 4   0
      * 5 6 7
     */
-    int os[2];
-    switch (linkIndex) {
-    case 0:
+//    static int os[2];
+
+    if(linkIndex == 0){
         os[0] = 1;
         os[1] = 0;
-        break;
-    case 1:
-        os[0] = 1;
-        os[1] = -1;
-        break;
-    case 2:
-        os[0] = 0;
-        os[1] = -1;
-        break;
-    case 3:
-        os[0] = -1;
-        os[1] = -1;
-        break;
-    case 4:
-        os[0] = -1;
-        os[1] = 0;
-        break;
-    case 5:
-        os[0] = -1;
-        os[1] = 1;
-        break;
-    case 6:
-        os[0] = 0;
-        os[1] = 1;
-        break;
-    case 7:
-        os[0] = 1;
-        os[1] = 1;
-        break;
-    default:
-        break;
     }
-    return os;
+    else if(linkIndex == 1){
+        os[0] = 1;
+        os[1] = -1;
+    }
+    else if(linkIndex == 2){
+        os[0] = 0;
+        os[1] = -1;
+    }
+    else if(linkIndex == 3){
+        os[0] = -1;
+        os[1] = -1;
+    }
+    else if(linkIndex == 4){
+        os[0] = -1;
+        os[1] = 0;
+    }
+    else if(linkIndex == 5){
+        os[0] = -1;
+        os[1] = 1;
+    }
+    else if(linkIndex == 6){
+        os[0] = 0;
+        os[1] = 1;
+    }
+    else if(linkIndex == 7){
+        os[0] = 1;
+        os[1] = 1;
+    }
+
+//    return os;
 }
 
 double getMaxD(Node *nodes, int imgWidth, int imgHeight)
@@ -408,53 +417,27 @@ void MainWindow::makeCostGraph(QImage *costGraph, Node* nodes, int width, int he
     //generate a cost graph from original image and node buffer with all the link costs
     for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                int nodeIndex = y * width + x;
                 int newX = 3 * x + 1;
                 int newY = 3 * y + 1;
-
-                Node node = nodes[nodeIndex];
-                int pixelR = imgarray.getRed(nodeIndex);
-                int pixelG = imgarray.getGreen(nodeIndex);
-                int pixelB = imgarray.getBlue(nodeIndex);
+                int pixelIndex = imgarray.vecloc(x, y);
+                int pixelR = imgarray.getRed(pixelIndex);
+                int pixelG = imgarray.getGreen(pixelIndex);
+                int pixelB = imgarray.getBlue(pixelIndex);
 
                 costGraph->setPixel(newX, newY, qRgb(pixelR, pixelG, pixelB));
 
-                int *nb0 = new int;
-                int *nb1 = new int;
-                int *nb2 = new int;
-                int *nb3 = new int;
-                int *nb4 = new int;
-                int *nb5 = new int;
-                int *nb6 = new int;
-                int *nb7 = new int;
+                int** nb = new int*[8];
+                for(int i = 0; i < 8; i++){
+                    nb[i] = new int[2];
 
-                nb0 = nbrOffset(0);
-                nb1 = nbrOffset(1);
-                nb2 = nbrOffset(2);
-                nb3 = nbrOffset(3);
-                nb4 = nbrOffset(4);
-                nb5 = nbrOffset(5);
-                nb6 = nbrOffset(6);
-                nb7 = nbrOffset(7);
+                    nbrOffset(i, nb[i]);
 
-                //set the RGB value of the neighbors to the cost level
-                costToRGB(costGraph, newX + nb0[0], newY + nb0[1], node.linkCost[0]);
-                costToRGB(costGraph, newX + nb1[0], newY + nb1[1], node.linkCost[1]);
-                costToRGB(costGraph, newX + nb2[0], newY + nb2[1], node.linkCost[2]);
-                costToRGB(costGraph, newX + nb3[0], newY + nb3[1], node.linkCost[3]);
-                costToRGB(costGraph, newX + nb4[0], newY + nb4[1], node.linkCost[4]);
-                costToRGB(costGraph, newX + nb5[0], newY + nb5[1], node.linkCost[5]);
-                costToRGB(costGraph, newX + nb6[0], newY + nb6[1], node.linkCost[6]);
-                costToRGB(costGraph, newX + nb7[0], newY + nb7[1], node.linkCost[7]);
+                    //set the RGB value of the neighbors to the cost level
+                    costToRGB(costGraph, newX + nb[i][0], newY + nb[i][1], nodes[pixelIndex].linkCost[i]);
 
-                delete []nb0;
-                delete []nb1;
-                delete []nb2;
-                delete []nb3;
-                delete []nb4;
-                delete []nb5;
-                delete []nb6;
-                delete []nb7;
+                    delete [] nb[i];
+                }
+                delete [] nb;
             }
     }
 }

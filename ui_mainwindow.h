@@ -38,12 +38,17 @@ public:
     QAction *actionSave_Contour;
     QAction *actionundo;
     QAction *actiontest;
+    QAction *actionPixel_Node;
+    QAction *actionCost_Graph;
+    QAction *actionPath_Tree;
+    QAction *actionMin_Path;
     QWidget *centralWidget;
     QGraphicsView *graphicsView;
     QMenuBar *menuBar;
     QMenu *menuIntelligent_Scissor;
     QMenu *menuEdge;
     QMenu *menuSize;
+    QMenu *menuDebug;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -75,6 +80,14 @@ public:
         actionundo->setObjectName(QStringLiteral("actionundo"));
         actiontest = new QAction(MainWindow);
         actiontest->setObjectName(QStringLiteral("actiontest"));
+        actionPixel_Node = new QAction(MainWindow);
+        actionPixel_Node->setObjectName(QStringLiteral("actionPixel_Node"));
+        actionCost_Graph = new QAction(MainWindow);
+        actionCost_Graph->setObjectName(QStringLiteral("actionCost_Graph"));
+        actionPath_Tree = new QAction(MainWindow);
+        actionPath_Tree->setObjectName(QStringLiteral("actionPath_Tree"));
+        actionMin_Path = new QAction(MainWindow);
+        actionMin_Path->setObjectName(QStringLiteral("actionMin_Path"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -90,13 +103,15 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1280, 17));
+        menuBar->setGeometry(QRect(0, 0, 1280, 26));
         menuIntelligent_Scissor = new QMenu(menuBar);
         menuIntelligent_Scissor->setObjectName(QStringLiteral("menuIntelligent_Scissor"));
         menuEdge = new QMenu(menuBar);
         menuEdge->setObjectName(QStringLiteral("menuEdge"));
         menuSize = new QMenu(menuBar);
         menuSize->setObjectName(QStringLiteral("menuSize"));
+        menuDebug = new QMenu(menuBar);
+        menuDebug->setObjectName(QStringLiteral("menuDebug"));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -108,6 +123,7 @@ public:
         menuBar->addAction(menuIntelligent_Scissor->menuAction());
         menuBar->addAction(menuEdge->menuAction());
         menuBar->addAction(menuSize->menuAction());
+        menuBar->addAction(menuDebug->menuAction());
         menuIntelligent_Scissor->addSeparator();
         menuIntelligent_Scissor->addAction(actionOpenImage);
         menuIntelligent_Scissor->addAction(actionCloseImage);
@@ -120,6 +136,10 @@ public:
         menuEdge->addAction(actiontest);
         menuSize->addAction(actionSize_x1);
         menuSize->addAction(actionSize_x2);
+        menuDebug->addAction(actionPixel_Node);
+        menuDebug->addAction(actionCost_Graph);
+        menuDebug->addAction(actionPath_Tree);
+        menuDebug->addAction(actionMin_Path);
 
         retranslateUi(MainWindow);
 
@@ -140,9 +160,14 @@ public:
         actionSave_Contour->setText(QApplication::translate("MainWindow", "Save Contour", nullptr));
         actionundo->setText(QApplication::translate("MainWindow", "undo", nullptr));
         actiontest->setText(QApplication::translate("MainWindow", "test", nullptr));
+        actionPixel_Node->setText(QApplication::translate("MainWindow", "Pixel Node", nullptr));
+        actionCost_Graph->setText(QApplication::translate("MainWindow", "Cost Graph", nullptr));
+        actionPath_Tree->setText(QApplication::translate("MainWindow", "Path Tree", nullptr));
+        actionMin_Path->setText(QApplication::translate("MainWindow", "Min Path", nullptr));
         menuIntelligent_Scissor->setTitle(QApplication::translate("MainWindow", "File", nullptr));
         menuEdge->setTitle(QApplication::translate("MainWindow", "Edge", nullptr));
         menuSize->setTitle(QApplication::translate("MainWindow", "Size", nullptr));
+        menuDebug->setTitle(QApplication::translate("MainWindow", "Debug", nullptr));
     } // retranslateUi
 
 };

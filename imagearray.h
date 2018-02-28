@@ -53,9 +53,24 @@ public:
     // output functions
     int getHeight(){return(this->height);}
     int getWidth(){return(this->width);}
-    int getRed(int loc){return vecRed.at(loc);}
-    int getGreen(int loc){return vecGreen.at(loc);}
-    int getBlue(int loc){return vecBlue.at(loc);}
+    int getRed(int loc){
+        if(loc >= 0 && loc < width * height)
+            return vecRed.at(loc);
+        else
+            return 0;
+    }
+    int getGreen(int loc){
+        if(loc >= 0 && loc < width * height)
+            return vecGreen.at(loc);
+        else
+            return 0;
+    }
+    int getBlue(int loc){
+        if(loc >= 0 && loc < width * height)
+            return vecBlue.at(loc);
+        else
+            return 0;
+    }
 
     // change cordinator to index
     int vecloc(int w, int h){return h * this->width + w;}

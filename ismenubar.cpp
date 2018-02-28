@@ -27,6 +27,7 @@ void MainWindow::on_actionOpenImage_triggered()
             ui->graphicsView->setScene(imgscene);
             ui->graphicsView->resize(image->width() + 10, image->height() + 10);
             ui->graphicsView->show();
+            initNodeBuffer(nodes, image);
         }
     }
 }
@@ -143,7 +144,7 @@ void MainWindow::on_actionPixel_Node_triggered()
     imgscene->addPixmap(QPixmap::fromImage(*pixelNodes));
     imgscene->installEventFilter(this);
     ui->graphicsView->setScene(imgscene);
-    ui->graphicsView->resize(image->width() + 10, image->height() + 10);
+    ui->graphicsView->resize(graphWidth + 10, graphHeight + 10);
     ui->graphicsView->show();
 }
 
