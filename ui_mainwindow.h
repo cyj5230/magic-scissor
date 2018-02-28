@@ -42,6 +42,7 @@ public:
     QAction *actionCost_Graph;
     QAction *actionPath_Tree;
     QAction *actionMin_Path;
+    QAction *actionReload;
     QWidget *centralWidget;
     QGraphicsView *graphicsView;
     QMenuBar *menuBar;
@@ -88,6 +89,8 @@ public:
         actionPath_Tree->setObjectName(QStringLiteral("actionPath_Tree"));
         actionMin_Path = new QAction(MainWindow);
         actionMin_Path->setObjectName(QStringLiteral("actionMin_Path"));
+        actionReload = new QAction(MainWindow);
+        actionReload->setObjectName(QStringLiteral("actionReload"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -126,6 +129,7 @@ public:
         menuBar->addAction(menuDebug->menuAction());
         menuIntelligent_Scissor->addSeparator();
         menuIntelligent_Scissor->addAction(actionOpenImage);
+        menuIntelligent_Scissor->addAction(actionReload);
         menuIntelligent_Scissor->addAction(actionCloseImage);
         menuIntelligent_Scissor->addAction(actionSave_Mask);
         menuIntelligent_Scissor->addAction(actionSave_Contour);
@@ -164,6 +168,7 @@ public:
         actionCost_Graph->setText(QApplication::translate("MainWindow", "Cost Graph", nullptr));
         actionPath_Tree->setText(QApplication::translate("MainWindow", "Path Tree", nullptr));
         actionMin_Path->setText(QApplication::translate("MainWindow", "Min Path", nullptr));
+        actionReload->setText(QApplication::translate("MainWindow", "Reload", nullptr));
         menuIntelligent_Scissor->setTitle(QApplication::translate("MainWindow", "File", nullptr));
         menuEdge->setTitle(QApplication::translate("MainWindow", "Edge", nullptr));
         menuSize->setTitle(QApplication::translate("MainWindow", "Size", nullptr));

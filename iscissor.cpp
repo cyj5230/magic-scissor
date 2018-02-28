@@ -24,7 +24,7 @@ void costToRGB(QImage* costGraph, int x, int y, double cost);
 
 
 //initialize the nodes in the node buffer
-void MainWindow::initNodeBuffer(Node* nodes, QImage* image)
+void MainWindow::initNodeBuffer()
 {
     int imgWidth = image->width();
     int imgHeight = image->height();
@@ -287,7 +287,7 @@ inline Node& NODE(Node* n, int i, int j, int width)
     return *(n + j * width + i);
 }
 
-void MainWindow::liveWireDP(int seedX, int seedY, Node *nodes)
+void MainWindow::liveWireDP(int seedX, int seedY)
 {
     int width = image->width();
     int height = image->height();
@@ -351,7 +351,7 @@ void MainWindow::liveWireDP(int seedX, int seedY, Node *nodes)
     }
 }
 
-std::list<std::pair<int, int>> MainWindow::minPath(int inputX, int inputY, Node* nodes)
+std::list<std::pair<int, int>> MainWindow::minPath(int inputX, int inputY)
 {
     //insert a list of nodes along the minimum cost path from the seed node to the input node
     int inputNodeIndex = inputY * this->image->width() + inputX;
@@ -412,7 +412,7 @@ void MainWindow::makePixelNodes(QImage *pixelNodes, int width, int height)
 }
 
 //(b) cost graph
-void MainWindow::makeCostGraph(QImage *costGraph, Node* nodes, int width, int height)
+void MainWindow::makeCostGraph(QImage *costGraph, int width, int height)
 {
     //generate a cost graph from original image and node buffer with all the link costs
     for (int x = 0; x < width; x++) {

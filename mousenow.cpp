@@ -28,8 +28,8 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
             scissorRunning = true;
             startx= mouseEvent->pos().x() -5; starty = mouseEvent->pos().y() -5;
             if(!useTempPath){
-                initNodeBuffer(nodes, image);
-                liveWireDP(startx, starty, nodes);
+                initNodeBuffer();
+                liveWireDP(startx, starty);
             }
             if(restartScissor){
                 *mkimage = image->copy();
@@ -52,14 +52,14 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
                 if(useTempPath){
                     tempPath(startx, starty, endx, endy, false);
                 }else{
-                    toEdgeVec(endx, endy, nodes, false);
+                    toEdgeVec(endx, endy, false);
                 }
                 if(finishScissor){
                     scissorRunning = false;
                     restartScissor = true;
                 }else{
                     startx = endx; starty = endy;
-                    if(!useTempPath){liveWireDP(startx, starty, nodes);}
+                    if(!useTempPath){liveWireDP(startx, starty);}
                 }
                 imgscene->clear();
                 imgscene->addPixmap(QPixmap::fromImage(*mkimage));
@@ -172,11 +172,11 @@ void MainWindow::drawTempEdge()
     ui->graphicsView->resize(image->width() + 10, image->height() + 10);
 }
 
-void MainWindow::toEdgeVec(int inputX, int inputY, Node* nodes, bool realtime = false)
+void MainWindow::toEdgeVec(int inputX, int inputY, bool realtime = false)
 {
     std::list<std::pair<int, int>> wPairList; int loc;
     std::pair<int, int> locpair;
-    wPairList = MainWindow::minPath(inputX, inputY, nodes);
+    wPairList = MainWindow::minPath(inputX, inputY);
     while(wPairList.empty()){
         locpair = wPairList.front();
         wPairList.pop_front();

@@ -55,6 +55,7 @@
     </property>
     <addaction name="separator"/>
     <addaction name="actionOpenImage"/>
+    <addaction name="actionReload"/>
     <addaction name="actionCloseImage"/>
     <addaction name="actionSave_Mask"/>
     <addaction name="actionSave_Contour"/>
@@ -172,6 +173,11 @@
   <action name="actionMin_Path">
    <property name="text">
     <string>Min Path</string>
+   </property>
+  </action>
+  <action name="actionReload">
+   <property name="text">
+    <string>Reload</string>
    </property>
   </action>
  </widget>

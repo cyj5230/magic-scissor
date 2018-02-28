@@ -27,7 +27,7 @@ void MainWindow::on_actionOpenImage_triggered()
             ui->graphicsView->setScene(imgscene);
             ui->graphicsView->resize(image->width() + 10, image->height() + 10);
             ui->graphicsView->show();
-            initNodeBuffer(nodes, image);
+            initNodeBuffer();
         }
     }
 }
@@ -120,14 +120,14 @@ void MainWindow::on_actionCost_Graph_triggered()
     int graphHeight = image->height() * 3;
     *costGraph = QPixmap(graphWidth, graphHeight).toImage();
 
-    makeCostGraph(costGraph, nodes, image->width(), image->height());
+    makeCostGraph(costGraph, image->width(), image->height());
 
     //display costgraph
     imgscene->clear();
     imgscene->addPixmap(QPixmap::fromImage(*costGraph));
     imgscene->installEventFilter(this);
     ui->graphicsView->setScene(imgscene);
-    ui->graphicsView->resize(image->width() + 10, image->height() + 10);
+    ui->graphicsView->resize(graphWidth + 10, graphHeight + 10);
     ui->graphicsView->show();
 }
 

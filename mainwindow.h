@@ -26,15 +26,14 @@ class MainWindow : public QMainWindow
 public:
     bool eventFilter(QObject *watched, QEvent *event);
     void mouseNow(QMouseEvent *event);
-    void initNodeBuffer(Node* nodes, QImage *image);
-    void liveWireDP(int seedX, int seedY, Node* nodes);
+    void initNodeBuffer();
+    void liveWireDP(int seedX, int seedY);
     void mouseInfo();
-    void minPath(FibHeap* path, int inputX, int inputY, Node* nodes, int width);
-    std::list<std::pair<int, int>> minPath(int inputX, int inputY, Node* nodes);
-    void makeCostGraph(QImage *costGraph, Node* nodes, int width, int height);
+    std::list<std::pair<int, int>> minPath(int inputX, int inputY);
+    void makeCostGraph(QImage *costGraph, int width, int height);
     void makePixelNodes(QImage *pixelNodes, int width, int height);
 
-    void toEdgeVec(int inputX, int inputY, Node* nodes, bool realtime);
+    void toEdgeVec(int inputX, int inputY, bool realtime);
     void drawEdge();
     void drawTempEdge();
     void drawPix(int x, int y);
