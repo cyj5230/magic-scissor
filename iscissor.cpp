@@ -373,6 +373,7 @@ void initNodeState(Node* nodes, int width, int height)
         }
 }
 
+//====================DEBUG MODE======================
 /*
  * Debug Mode:
  * (a) pixel node
@@ -548,3 +549,4 @@ void MainWindow::makeMinPath(int width, int height){
             }
     }
 }
+//====================END OF DEBUG MODE======================
