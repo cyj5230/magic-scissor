@@ -174,13 +174,13 @@ void MainWindow::drawTempEdge()
 
 void MainWindow::toEdgeVec(int inputX, int inputY, bool realtime = false)
 {
-    std::list<std::pair<int, int>> wPairList; int loc;
-    std::pair<int, int> locpair;
-    wPairList = MainWindow::minPath(inputX, inputY);
-    while(wPairList.empty()){
-        locpair = wPairList.front();
-        wPairList.pop_front();
-        loc = imgarray.vecloc(locpair.first, locpair.second);
+    int loc;
+    Node locNode;
+    MainWindow::minPath(inputX, inputY);
+    while(!minPathList.empty()){
+        locNode = minPathList.front();
+        minPathList.pop_front();
+        loc = imgarray.vecloc(locNode.column, locNode.row);
         if(realtime){
             imgarray.vecTempEdge[loc] = true;
         }else {

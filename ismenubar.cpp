@@ -4,6 +4,8 @@
 #endif
 
 #include <QDebug>
+#include <QMessageBox>
+#include <QInputDialog>
 
 // Rewrite on_actionX_triggered slot functions
 
@@ -116,35 +118,114 @@ void MainWindow::on_actiontest_triggered()
 
 void MainWindow::on_actionCost_Graph_triggered()
 {
+    if(image->isNull()){
+        QMessageBox msgBox;
+        msgBox.setText("There is no image!");
+        msgBox.exec();
+        return;
+    }
     int graphWidth = image->width() * 3;
     int graphHeight = image->height() * 3;
-    *costGraph = QPixmap(graphWidth, graphHeight).toImage();
+    *debugGraph = QPixmap(graphWidth, graphHeight).toImage();
 
-    makeCostGraph(costGraph, image->width(), image->height());
+    makeCostGraph(image->width(), image->height());
 
     //display costgraph
     imgscene->clear();
-    imgscene->addPixmap(QPixmap::fromImage(*costGraph));
+    imgscene->addPixmap(QPixmap::fromImage(*debugGraph));
     imgscene->installEventFilter(this);
     ui->graphicsView->setScene(imgscene);
     ui->graphicsView->resize(graphWidth + 10, graphHeight + 10);
     ui->graphicsView->show();
+
+    //to be done: disable the mouse
+}
+
+void MainWindow::on_actionPath_Tree_triggered()
+{
+    if(image->isNull()){
+        QMessageBox msgBox;
+        msgBox.setText("There is no image!");
+        msgBox.exec();
+        return;
+    }
+    int graphWidth = image->width() * 3;
+    int graphHeight = image->height() * 3;
+    *debugGraph = QPixmap(graphWidth, graphHeight).toImage();
+
+    bool ok = false;
+    int numNodes = image->width() * image->height();
+    int expand = QInputDialog::getInt(
+                this, tr("Intelligent Scissor"),
+                tr("Please enter the number of expanded nodes"), numNodes,
+                0, numNodes, numNodes/10, &ok);
+    if(ok)
+        makePathTree(image->width(), image->height(), expand);
+    else{
+        QMessageBox msgBox;
+        msgBox.setText("There is no expand number!");
+        msgBox.exec();
+        return;
+    }
+
+    //display costgraph
+    imgscene->clear();
+    imgscene->addPixmap(QPixmap::fromImage(*debugGraph));
+    imgscene->installEventFilter(this);
+    ui->graphicsView->setScene(imgscene);
+    ui->graphicsView->resize(graphWidth + 10, graphHeight + 10);
+    ui->graphicsView->show();
+
+    //to be done: disable the mouse
+}
+
+void MainWindow::on_actionMin_Path_triggered()
+{
+    if(image->isNull()){
+        QMessageBox msgBox;
+        msgBox.setText("There is no image!");
+        msgBox.exec();
+        return;
+    }
+    int graphWidth = image->width() * 3;
+    int graphHeight = image->height() * 3;
+    *debugGraph = QPixmap(graphWidth, graphHeight).toImage();
+
+    makeMinPath(image->width(), image->height());
+
+    //display pixel nodes
+    imgscene->clear();
+    imgscene->addPixmap(QPixmap::fromImage(*debugGraph));
+    imgscene->installEventFilter(this);
+    ui->graphicsView->setScene(imgscene);
+    ui->graphicsView->resize(graphWidth + 10, graphHeight + 10);
+    ui->graphicsView->show();
+
+    //to be done: enable the mouse
 }
 
 void MainWindow::on_actionPixel_Node_triggered()
 {
+    if(image->isNull()){
+        QMessageBox msgBox;
+        msgBox.setText("There is no image!");
+        msgBox.exec();
+        return;
+    }
     int graphWidth = image->width() * 3;
     int graphHeight = image->height() * 3;
-    *pixelNodes = QPixmap(graphWidth, graphHeight).toImage();
+    *debugGraph = QPixmap(graphWidth, graphHeight).toImage();
 
-    makePixelNodes(pixelNodes, image->width(), image->height());
+    makePixelNodes(image->width(), image->height());
 
     //display pixel nodes
     imgscene->clear();
-    imgscene->addPixmap(QPixmap::fromImage(*pixelNodes));
+    imgscene->addPixmap(QPixmap::fromImage(*debugGraph));
     imgscene->installEventFilter(this);
     ui->graphicsView->setScene(imgscene);
     ui->graphicsView->resize(graphWidth + 10, graphHeight + 10);
     ui->graphicsView->show();
+
+    //to be done: disable the mouse
 }
 

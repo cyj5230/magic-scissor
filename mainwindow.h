@@ -27,11 +27,14 @@ public:
     bool eventFilter(QObject *watched, QEvent *event);
     void mouseNow(QMouseEvent *event);
     void initNodeBuffer();
-    void liveWireDP(int seedX, int seedY);
+    void liveWireDP(int seedX, int seedY, int expand = -1, double maxCost = 0.0000);
     void mouseInfo();
-    std::list<std::pair<int, int>> minPath(int inputX, int inputY);
-    void makeCostGraph(QImage *costGraph, int width, int height);
-    void makePixelNodes(QImage *pixelNodes, int width, int height);
+    void minPath(int inputX, int inputY);
+
+    void makeCostGraph(int width, int height);
+    void makePixelNodes(int width, int height);
+    void makePathTree(int width, int height, int expand);
+    void makeMinPath(int width, int height);
 
     void toEdgeVec(int inputX, int inputY, bool realtime);
     void drawEdge();
@@ -53,7 +56,7 @@ protected:
 
 private:
     Ui::MainWindow *ui;
-    QImage *rawImage, *image, *costGraph, *pixelNodes;
+    QImage *rawImage, *image, *debugGraph;
     QImage *mkimage = new QImage;
     QImage *tempImage = new QImage;
     int mousex, mousey, wirex, wirey;
@@ -62,10 +65,8 @@ private:
     QString imgFileName;
 
     Node* nodes;
+    std::list<Node> minPathList;
     bool undoDisabled = true;
-
-
-
     bool scissorRunning = false;
     bool restartScissor = false;
     bool finishScissor = false;
@@ -81,8 +82,8 @@ private slots:
     void on_actiontest_triggered();
     void on_actionPixel_Node_triggered();
     void on_actionCost_Graph_triggered();
-//    void on_actionPath_Tree_triggered();
-//    void on_actionMin_Path_triggered();
+    void on_actionPath_Tree_triggered();
+    void on_actionMin_Path_triggered();
 };
 
 #endif // MAINWINDOW_H

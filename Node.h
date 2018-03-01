@@ -11,14 +11,16 @@ class Node : public FibHeapNode
 {
 public:
     double linkCost[8];
-    //state: 0-INITIAL, 1-ACTIVE, 2-EXPANDED
-    int state;
+
+    int state;//state: 0-INITIAL, 1-ACTIVE, 2-EXPANDED
     double totalCost;
     Node *prevNode;
+
+    int prevNodeLink;//prevNode's link index to this node
     int column, row;
     int pqIndex;
 
-    Node() : FibHeapNode() { prevNode = nullptr; state = INITIAL;}
+    Node() : FibHeapNode() { prevNode = nullptr; prevNodeLink = -1;state = INITIAL; totalCost = -1;}
 
     virtual void operator =(FibHeapNode& RHS);
     virtual int  operator ==(FibHeapNode& RHS);
@@ -28,7 +30,6 @@ public:
     double GetCostValue() { return totalCost; }
     void SetCostValue(double incost) { totalCost = incost; }
 
-    void nbrOffset(int osX, int osY, int linkIndex);
     int getPQIndex() const;
     int& getPQIndex();
 };

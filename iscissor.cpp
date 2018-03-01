@@ -274,32 +274,26 @@ void computeCost(Node *nodes, int imgWidth, int imgHeight, double maxD)
     }
 }
 
-static int offsetToLinkIndex(int dx, int dy)
-{
-    int indices[9] = { 3, 2, 1, 4, -1, 0, 5, 6, 7 };
-    int tmp_idx = (dy + 1) * 3 + (dx + 1);
-    assert(tmp_idx >= 0 && tmp_idx < 9 && tmp_idx != 4);
-    return indices[tmp_idx];
-}
-
-inline Node& NODE(Node* n, int i, int j, int width)
-{
-    return *(n + j * width + i);
-}
-
-void MainWindow::liveWireDP(int seedX, int seedY)
+void MainWindow::liveWireDP(int seedX, int seedY, int expand, double maxCost)
 {
     int width = image->width();
     int height = image->height();
+    int count = 0;
+    maxCost = 0.0000;
+
+    if(expand == -1){
+        expand = width * height;
+    }
 
     FibHeap pq;
-    Node* seed = &(NODE(nodes, seedX, seedY, width));
+    Node seed = nodes[seedX + seedY * width];
     //set the total cost of seed to be zero
     //make seed the root of the minimum path tree ( pointing to NULL )
-    seed->SetCostValue(0);
-    seed->prevNode = NULL;
+    seed.SetCostValue(0);
+    seed.prevNode = NULL;
 
-    pq.Insert(seed);
+    count++;
+    pq.Insert(&seed);
 
     //while pq is not empty
     while (pq.GetNumNodes()!=0) {
@@ -308,40 +302,48 @@ void MainWindow::liveWireDP(int seedX, int seedY)
         minCostNode->state = EXPANDED;
 
         for(int link = 0; link < 8; link++){
-            int osX = 0;
-            int osY = 0;
-            minCostNode->nbrOffset(osX, osY, link);
+            int* offset = new int[2];
+            nbrOffset(link, offset);
 
-            int nbX = minCostNode->column + osX;
-            int nbY = minCostNode->row + osY;
+            int nbX = minCostNode->column + offset[0];
+            int nbY = minCostNode->row + offset[1];
+
+            delete [] offset;
 
             if((nbX >= 0 && nbX < width) && (nbY >= 0 && nbY < height)){
-                Node* nbNode = &(NODE(nodes, nbX, nbY, width));
+                Node nbNode = nodes[nbX + nbY * width];
 
-                if(nbNode->state != EXPANDED){
-                    if(nbNode->state == INITIAL){
+                if(nbNode.state != EXPANDED){
+                    if(nbNode.state == INITIAL && count < expand){
                         //make q be the predecessor of r ( for the the minimum path tree )
-                        nbNode->prevNode = minCostNode;
+                        nbNode.prevNode = minCostNode;
+                        nbNode.prevNodeLink = link;//prevNode's link index to the new node
 
                         //set the total cost of r to be the sum of the total cost of q and link cost from q to r as its total cost
-                        nbNode->SetCostValue(minCostNode->totalCost + minCostNode->linkCost[link]);
+                        nbNode.SetCostValue(minCostNode->totalCost + minCostNode->linkCost[link]);
+
+                        if(nbNode.totalCost > maxCost)
+                            maxCost = nbNode.totalCost;
 
                         //insert r in pq and mark it as ACTIVE
-                        pq.Insert(nbNode);
-                        nbNode->state = ACTIVE;
+                        pq.Insert(&nbNode);
+                        nbNode.state = ACTIVE;
+
+                        count++;
                     }
                     else{
                         double tmpCost = minCostNode->totalCost + minCostNode->linkCost[link];
-                        if(tmpCost < nbNode->totalCost){
+                        if(tmpCost < nbNode.totalCost){
 
                             //update q to be the predecessor of r ( for the minimum path tree )
-                            nbNode->prevNode = minCostNode;
+                            nbNode.prevNode = minCostNode;
+                            nbNode.prevNodeLink = link;//prevNode's link index to the new node
 
                             //update the total cost of r in pq
-                            nbNode->SetCostValue(tmpCost);
+                            nbNode.SetCostValue(tmpCost);
 
                             //Update(DecreaseKey)
-                            pq.DecreaseKey(nbNode, *nbNode);
+                            pq.DecreaseKey(&nbNode, nbNode);
                         }
                     }
                 }
@@ -351,28 +353,22 @@ void MainWindow::liveWireDP(int seedX, int seedY)
     }
 }
 
-std::list<std::pair<int, int>> MainWindow::minPath(int inputX, int inputY)
+void MainWindow::minPath(int inputX, int inputY)
 {
     //insert a list of nodes along the minimum cost path from the seed node to the input node
     int inputNodeIndex = inputY * this->image->width() + inputX;
-    Node* node = &(nodes[inputNodeIndex]);
-    std::list<std::pair<int, int>> minPathList;
+    Node* node = &nodes[inputNodeIndex];
     while(node->prevNode){
-        int col = node->column;
-        int row = node->row;
-        std::pair<int, int> coords = std::make_pair(col, row);
-        minPathList.push_front(coords);
+        minPathList.push_front(*node);
         node = node->prevNode;
     }
-
-    return minPathList;
 }
 
 void initNodeState(Node* nodes, int width, int height)
 {
     for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
-                NODE(nodes, x, y, width).state = INITIAL;
+                nodes[y * width + x].state = INITIAL;
             }
         }
 }
@@ -386,12 +382,12 @@ void initNodeState(Node* nodes, int width, int height)
 */
 
 //(a) pixel node
-void MainWindow::makePixelNodes(QImage *pixelNodes, int width, int height)
+void MainWindow::makePixelNodes(int width, int height)
 {
     //set all pixels to black
-    for (int i = 0; i < pixelNodes->width(); i++) {
-        for (int j = 0; j < pixelNodes->height(); j++) {
-            pixelNodes->setPixel(i, j, qRgb(0, 0, 0));
+    for (int i = 0; i < debugGraph->width(); i++) {
+        for (int j = 0; j < debugGraph->height(); j++) {
+            debugGraph->setPixel(i, j, qRgb(0, 0, 0));
         }
     }
 
@@ -406,13 +402,13 @@ void MainWindow::makePixelNodes(QImage *pixelNodes, int width, int height)
             int pixelG = imgarray.getGreen(pixelIndex);
             int pixelB = imgarray.getBlue(pixelIndex);
 
-            pixelNodes->setPixel(newX, newY, qRgb(pixelR, pixelG, pixelB));
+            debugGraph->setPixel(newX, newY, qRgb(pixelR, pixelG, pixelB));
         }
     }
 }
 
 //(b) cost graph
-void MainWindow::makeCostGraph(QImage *costGraph, int width, int height)
+void MainWindow::makeCostGraph(int width, int height)
 {
     //generate a cost graph from original image and node buffer with all the link costs
     for (int x = 0; x < width; x++) {
@@ -424,7 +420,7 @@ void MainWindow::makeCostGraph(QImage *costGraph, int width, int height)
                 int pixelG = imgarray.getGreen(pixelIndex);
                 int pixelB = imgarray.getBlue(pixelIndex);
 
-                costGraph->setPixel(newX, newY, qRgb(pixelR, pixelG, pixelB));
+                debugGraph->setPixel(newX, newY, qRgb(pixelR, pixelG, pixelB));
 
                 int** nb = new int*[8];
                 for(int i = 0; i < 8; i++){
@@ -433,7 +429,7 @@ void MainWindow::makeCostGraph(QImage *costGraph, int width, int height)
                     nbrOffset(i, nb[i]);
 
                     //set the RGB value of the neighbors to the cost level
-                    costToRGB(costGraph, newX + nb[i][0], newY + nb[i][1], nodes[pixelIndex].linkCost[i]);
+                    costToRGB(debugGraph, newX + nb[i][0], newY + nb[i][1], nodes[pixelIndex].linkCost[i]);
 
                     delete [] nb[i];
                 }
@@ -449,4 +445,106 @@ void costToRGB(QImage* costGraph, int x, int y, double cost)
     //based on the given cost
     int costRGB = (int)(floor(__max(0.0, __min(255.0, cost))));
     costGraph->setPixel(x, y, qRgb(costRGB, costRGB, costRGB));
+}
+
+//(c)path tree
+void MainWindow::makePathTree(int width, int height, int expand)
+{
+    //show minimum path tree in the cost graph for the current seed
+    if(!minPathList.empty()){
+        Node seed = minPathList.back();
+        int col = seed.column;
+        int row = seed.row;
+
+        double maxCost = 0.0000;
+        liveWireDP(col, row, expand, maxCost);
+
+        //set all pixels to black
+        for (int i = 0; i < debugGraph->width(); i++) {
+            for (int j = 0; j < debugGraph->height(); j++) {
+                debugGraph->setPixel(i, j, qRgb(0, 0, 0));
+            }
+        }
+
+        //The tree consists of links with yellow color
+        //The back track direction (towards the seed) goes from light yellow to dark yellow
+        for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    int newX = 3 * x + 1;
+                    int newY = 3 * y + 1;
+                    int nodeIndex = y * width + x;
+
+                    if(nodes[nodeIndex].totalCost == -1 || nodes[nodeIndex].prevNode == nullptr)
+                        break;
+
+                    int** nb = new int*[8];
+                    for(int i = 0; i < 8; i++){
+                        nb[i] = new int[2];
+
+                        nbrOffset(i, nb[i]);
+
+                        //set the yellow color of the neighbors to the cost level
+                        //light yellow: R = 255, G = 255, B = 0
+                        //dark yellow(black): R = 0, G = 0, B = 0
+                        int yellow = 255 - (int)nodes[nodeIndex].totalCost * 255/(maxCost * sqrt(2));
+                        debugGraph->setPixel(newX + nb[i][0], newY + nb[i][1], qRgb(yellow, yellow, 0));
+
+                        delete [] nb[i];
+                    }
+                    delete [] nb;
+
+                    //set the center pixels to green-blue
+                    debugGraph->setPixel(newX, newY, qRgb(0, 255, 255));
+                }
+        }
+    }
+
+}
+
+//(d)min path
+void MainWindow::makeMinPath(int width, int height){
+    //show the minimum path between the current seed and the mouse position
+
+    //display the path tree on the whole graph
+    MainWindow::makePathTree(width, height, -1);
+
+    for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int newX = 3 * x + 1;
+                int newY = 3 * y + 1;
+                int nodeIndex = y * width + x;
+
+                if(nodes[nodeIndex].totalCost == -1 || nodes[nodeIndex].prevNode == nullptr)
+                    continue;
+
+                //find the minPath from prevNode to current node
+                int link = nodes[nodeIndex].prevNodeLink;
+                int newPrevX = 3 * nodes[nodeIndex].prevNode->column + 1;
+                int newPrevY = 3 * nodes[nodeIndex].prevNode->row + 1;
+
+                int** nb = new int*[2];
+                for(int i = 0; i < 2; i++){
+                    nb[i] = new int[2];
+                }
+
+                nbrOffset(link, nb[0]);
+                nbrOffset((link+4)%8, nb[1]);
+
+                //set the color of the minPath to red
+                /*
+                 * for example, if link is 7, (link + 4)%8 is 3
+                 *[prevNode]
+                 *          [link 7]
+                 *                  [link 3]
+                 *                          [currentNode]
+                 */
+                debugGraph->setPixel(newPrevX + nb[0][0], newPrevY + nb[0][1], qRgb(255, 0, 0));
+                debugGraph->setPixel(newX + nb[1][0], newY + nb[1][1], qRgb(255, 0, 0));
+
+                for(int i = 0; i < 2; i++){
+                    delete [] nb[i];
+                }
+                delete [] nb;
+            }
+    }
 }
