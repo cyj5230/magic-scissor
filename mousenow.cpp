@@ -220,8 +220,8 @@ bool MainWindow::genBorder(bool temp = false)
     pixnum = this->imgarray.vecBorder.count();
     for(int index = 0; index < pixnum; index++){
         if (!temp && imgarray.vecEdge.at(index)){
-            for(int w = -5; w < 6; w++){
-                for (int h = -5; h < 6; h ++){
+            for(int w = -2; w < 3; w++){
+                for (int h = -2; h < 3; h ++){
                     loc = index + w + h * this->imgarray.getWidth();
                     if(loc <= 0 || loc > pixnum){continue;}
                     isBorder = (!imgarray.vecEdge.at(loc)) && (!imgarray.vecBorder.at(loc));
@@ -231,8 +231,8 @@ bool MainWindow::genBorder(bool temp = false)
                 }
             }
         } else if (temp && imgarray.vecTempEdge.at(index)){
-            for(int w = -5; w < 6; w++){
-                for (int h = -5; h < 6; h ++){
+            for(int w = -2; w < 3; w++){
+                for (int h = -2; h < 3; h ++){
                     loc = index + w + h * this->imgarray.getWidth();
                     if(loc <= 0 || loc > pixnum){continue;}
                     isBorder = (!imgarray.vecTempEdge.at(loc)) && (!imgarray.vecTempBorder.at(loc));

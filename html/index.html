@@ -37,16 +37,6 @@
 					<span>MSBD6000C Computer Vision - Project 1</span>
 					<span>LI Yilong & CHEN Yuji</span>
 				</div>
-				
-				<!-- Nav -->
-				<!--<nav id="nav">-->
-					<!--<ul>-->
-					<!--	<li class="active"><a href="index.html">Homepage</a></li>-->
-					<!--	<li><a href="left-sidebar.html">Gallery</a></li>-->
-					<!--	<li><a href="right-sidebar.html">Debug Mode</a></li>-->
-					<!--	<li><a href="no-sidebar.html">UI Functions</a></li>-->
-					<!--</ul>-->
-				<!--</nav>-->
 			</div>
 		</div>
 
@@ -88,12 +78,44 @@
 						<section>
 							<header>
 								<h2>How To Use It</h2>
-								<span class="byline">Load Picture</span>
+								<span class="byline"><p></p>Load Picture</span>
+									<p>To load a picture, click <strong>File</strong> in the top left-hand corner of the screen. From the menu, choose <strong>Open</strong>. A File Explorer will come up. Choose the picture that you want to edit and double click on it.</p>
+									<img src="images/menu-file.png" alt="" />
+								
 								<span class="byline">Choose Mode</span>
+									<p>The default mode is Work Mode, showing original image with contours superimposed on it. You can switch the mode between Work Mode and Debug Mode by clicking <strong>Mode</strong> and choosing the mode you want.</p>
+									<img src="images/menu-mode.png" alt="" />
+									<p>
+										<strong>Work Mode</strong>
+									</p>
+									
+									<p>Show original image with contours superimposed on it.</p>
+									<img src="images/lena.jpg" alt="" />
+									<p>
+										<strong>Debug Mode</strong>
+									</p>
+									<p><i>Pixel Node</i></p>
+									<p>Draw a cost graph with original image pixel colors at the center of each 3-by-3 window, and black everywhere else.</p>
+									<img src="images/debug-pixelNode.png" alt="" />
+									<p><i>Cost Graph</i></p>
+									<p>Draw a cost graph with both pixel colors and link costs, where you can see whether your cost computation is reasonable or not, e.g., low cost (dark intensity) for links along image edges.</p>
+									<img src="images/debug-costGraph.png" alt="" />
+									<p><i>Path Tree</i></p>
+									<p>Show minimum path tree in the cost graph for the current seed. You can use the input box to simulate how the tree is computed by specifying the number of expanded nodes. By default, the number of expanded nodes is the number of pixels in the whole picture. The tree consists of links with yellow color. The back track direction (towards the seed) goes from light yellow to dark yellow.</p>
+									<p><i>Min Path</i></p>
+									<p>Show the minimum path between the current seed and the mouse position.</p>
+									<p><strong>Notice: </strong>To use the <i>Path Tree</i> and <i>Min Path</i> in debug mode, you need to have an active seed point. the active seed point is the last <strong>Left Click / Ctrl + Left Click</strong> point on the contour you are working with, e.g., the contour that has not yet be committed by <strong>Enter / Ctrl + Enter</strong>. (See the short cut keys below)</p>
+								
 								<span class="byline">Draw Live Wire</span>
+									<p>In <strong>Work Mode</strong>, press <strong>Left Click</strong> to locate the first seed. Then, move the mouse and the wire along the edge will be displayed on the picture. Keep <strong>Left Click</strong> to create following seeds.</p>
+									<img src="images/livewire.png" alt="" />
+								
 								<span class="byline">Finish and Save</span>
+									<p>If you have created some seeds, press and hold <strong>Ctrl</strong> to finish the current contour, or press and hold <strong>Ctrl + Enter</strong> to finish the current contour as closed.</p>
+									<img src="images/saved-contour.bmp" alt="" />
+									<p>To save your work, click <strong>File</strong> in the menu and choose <strong>Save Mask</strong> to save compositing mask for PhotoShop, or choose <strong>Save Contour</strong> to save image with contour marked.</p>
+									<img src="images/menu-file.png" alt="" />
 							</header>
-							<p>Under contruction...</p>
 						</section>
 					</div>
 					
@@ -127,14 +149,11 @@
 			<div class="container">
 				<div class="row">
 					<div class="4u">
-						<h2>Debug Modes</h2>
-						<a href="#" class="image full"><img src="images/pic01.jpg" alt="" /></a>
-						<p>Nullam non wisi a sem semper eleifend. Donec mattis libero eget urna. Donec leo, vivamus fermentum nibh in augue praesent a lacus at urna congue rutrum. Quisque dictum. Pellentesque viverra vulputate enim.</p>
-					</div>
-					<div class="4u">
 						<h2>Other UI Functions</h2>
 						<a href="#" class="image full"><img src="images/pic02.jpg" alt="" /></a>
-						<p>Nullam non wisi a sem semper eleifend. Donec mattis libero eget urna. Donec leo, vivamus fermentum nibh in augue praesent a lacus at urna congue rutrum. Quisque dictum. Pellentesque viverra vulputate enim.</p>
+						<p><strong>Ctrl+"+"</strong>, zoom in</p>
+						<p><strong>Ctrl+"-"</strong>, zoom out</p>
+						<p><strong>Backspace</strong>, when scissoring, delete the last seed; otherwise, delete selected contour</p>
 					</div>
 					<div class="4u">
 						<h2>Whistles and Bells</h2>
@@ -145,50 +164,6 @@
 			</div>
 		</div>
 
-
-		<!-- Footer -->
-		<!--<div id="footer">-->
-		<!--	<div class="container">-->
-		<!--		<div class="row">-->
-		<!--			<div class="4u">-->
-		<!--				<section>-->
-		<!--					<h2>Latest Posts</h2>-->
-		<!--					<ul class="default">-->
-		<!--						<li><a href="#">Pellentesque lectus gravida blandit</a></li>-->
-		<!--						<li><a href="#">Lorem ipsum consectetuer adipiscing</a></li>-->
-		<!--						<li><a href="#">Phasellus nibh pellentesque congue</a></li>-->
-		<!--						<li><a href="#">Cras vitae metus aliquam pharetra</a></li>-->
-		<!--						<li><a href="#">Maecenas vitae orci feugiat eleifend</a></li>-->
-		<!--					</ul>-->
-		<!--				</section>-->
-		<!--			</div>-->
-		<!--			<div class="4u">-->
-		<!--				<section>-->
-		<!--					<h2>Ultrices fringilla</h2>-->
-		<!--					<ul class="default">-->
-		<!--						<li><a href="#">Pellentesque lectus gravida blandit</a></li>-->
-		<!--						<li><a href="#">Lorem ipsum consectetuer adipiscing</a></li>-->
-		<!--						<li><a href="#">Phasellus nibh pellentesque congue</a></li>-->
-		<!--						<li><a href="#">Cras vitae metus aliquam pharetra</a></li>-->
-		<!--						<li><a href="#">Maecenas vitae orci feugiat eleifend</a></li>-->
-		<!--					</ul>-->
-		<!--				</section>-->
-		<!--			</div>-->
-		<!--			<div class="4u">-->
-		<!--				<section>-->
-		<!--					<h2>Aenean elementum</h2>-->
-		<!--					<ul class="default">-->
-		<!--						<li><a href="#">Pellentesque lectus gravida blandit</a></li>-->
-		<!--						<li><a href="#">Lorem ipsum consectetuer adipiscing</a></li>-->
-		<!--						<li><a href="#">Phasellus nibh pellentesque congue</a></li>-->
-		<!--						<li><a href="#">Cras vitae metus aliquam pharetra</a></li>-->
-		<!--						<li><a href="#">Maecenas vitae orci feugiat eleifend</a></li>-->
-		<!--					</ul>-->
-		<!--				</section>-->
-		<!--			</div>-->
-		<!--		</div>-->
-		<!--	</div>-->
-		<!--</div>-->
 
 		<!-- Copyright -->
 		<div id="copyright">

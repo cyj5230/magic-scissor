@@ -130,9 +130,9 @@ public:
         MainWindow->setStatusBar(statusBar);
 
         menuBar->addAction(menuIntelligent_Scissor->menuAction());
+        menuBar->addAction(menuMode->menuAction());
         menuBar->addAction(menuEdge->menuAction());
         menuBar->addAction(menuSize->menuAction());
-        menuBar->addAction(menuMode->menuAction());
         menuIntelligent_Scissor->addSeparator();
         menuIntelligent_Scissor->addAction(actionOpenImage);
         menuIntelligent_Scissor->addAction(actionCloseImage);

@@ -204,7 +204,7 @@ void MainWindow::on_actionMin_Path_triggered()
     //to be done: enable the mouse
 }
 
-void MainWindow::on_actionSave_Image_triggered()
+void MainWindow::on_actionSave_Contour_triggered()
 {
     QString filename = QFileDialog::getSaveFileName(this,
         tr("Save Image"),
@@ -216,7 +216,7 @@ void MainWindow::on_actionSave_Image_triggered()
     }
     else
     {
-        if(!(image->save(filename)))
+        if(!(mkimage->save(filename)))
         {
             QMessageBox::information(this,
                 tr("Failed to save the image"),

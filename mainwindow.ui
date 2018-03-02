@@ -92,9 +92,9 @@
     <addaction name="menuDebug_3"/>
    </widget>
    <addaction name="menuIntelligent_Scissor"/>
+   <addaction name="menuMode"/>
    <addaction name="menuEdge"/>
    <addaction name="menuSize"/>
-   <addaction name="menuMode"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
