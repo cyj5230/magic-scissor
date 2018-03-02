@@ -55,7 +55,6 @@
     </property>
     <addaction name="separator"/>
     <addaction name="actionOpenImage"/>
-    <addaction name="actionReload"/>
     <addaction name="actionCloseImage"/>
     <addaction name="actionSave_Mask"/>
     <addaction name="actionSave_Contour"/>
@@ -66,7 +65,6 @@
     </property>
     <addaction name="actionPixel"/>
     <addaction name="actionmouseTrack"/>
-    <addaction name="actionliveWire"/>
     <addaction name="actionundo"/>
     <addaction name="actiontest"/>
    </widget>
@@ -77,19 +75,26 @@
     <addaction name="actionSize_x1"/>
     <addaction name="actionSize_x2"/>
    </widget>
-   <widget class="QMenu" name="menuDebug">
+   <widget class="QMenu" name="menuMode">
     <property name="title">
-     <string>Debug</string>
+     <string>Mode</string>
     </property>
-    <addaction name="actionPixel_Node"/>
-    <addaction name="actionCost_Graph"/>
-    <addaction name="actionPath_Tree"/>
-    <addaction name="actionMin_Path"/>
+    <widget class="QMenu" name="menuDebug_3">
+     <property name="title">
+      <string>Debug</string>
+     </property>
+     <addaction name="actionPixel_Node"/>
+     <addaction name="actionCost_Graph"/>
+     <addaction name="actionPath_Tree"/>
+     <addaction name="actionMin_Path"/>
+    </widget>
+    <addaction name="actionWork_Mode"/>
+    <addaction name="menuDebug_3"/>
    </widget>
    <addaction name="menuIntelligent_Scissor"/>
    <addaction name="menuEdge"/>
    <addaction name="menuSize"/>
-   <addaction name="menuDebug"/>
+   <addaction name="menuMode"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -155,9 +160,14 @@
     <string>test</string>
    </property>
   </action>
-  <action name="actionPixel_Node">
+  <action name="actionReload">
    <property name="text">
-    <string>Pixel Node</string>
+    <string>Reload</string>
+   </property>
+  </action>
+  <action name="actionWork_Mode">
+   <property name="text">
+    <string>Work</string>
    </property>
   </action>
   <action name="actionCost_Graph">
@@ -175,9 +185,9 @@
     <string>Min Path</string>
    </property>
   </action>
-  <action name="actionReload">
+  <action name="actionPixel_Node">
    <property name="text">
-    <string>Reload</string>
+    <string>Pixel Node</string>
    </property>
   </action>
  </widget>
