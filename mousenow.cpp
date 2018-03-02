@@ -24,7 +24,7 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
     bool canDraw;
     if(watched == ui->graphicsView && event->type() == QEvent::MouseButtonPress){
         QMouseEvent *mouseEvent = (QMouseEvent*) event;
-        qDebug() << "clicked on the image at " << mouseEvent->pos().x() << mouseEvent->pos().y();
+        qDebug() << "clicked on the image at " << mouseEvent->pos().x() << mouseEvent->pos().y() << scissorRunning;
         if(!scissorRunning){
             scissorRunning = true;
             startx= mouseEvent->pos().x() -5; starty = mouseEvent->pos().y() -5;
@@ -55,6 +55,7 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
                     tempPath(startx, starty, endx, endy, false);
                 }else{
                     toEdgeVec(endx, endy, false);
+                    qDebug() << "toEdgeVec done";
                 }
                 if(finishScissor){
                     scissorRunning = false;
@@ -72,6 +73,7 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
                 ui->graphicsView->show();
             }
         }
+        qDebug() << "one click event done";
     }else if(watched == imgscene){
         QPoint mousePos = mapFromGlobal(QCursor::pos());
         mousex = mousePos.x() -5;
@@ -83,14 +85,17 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
                 (mousey > 0 && mousey < image->height());
         if(canDraw && scissorRunning){
             ui->statusBar->showMessage(QString("%1, %2").arg(mousex).arg(mousey));
+            *tempImage = mkimage->copy();
+            foundArea(mousex, mousey);
             if(useTempPath){
-                *tempImage = mkimage->copy();
-                foundArea(mousex, mousey);
                 tempPath(startx, starty, mousex, mousey, true);
-            }else{
-                *tempImage = mkimage->copy();
-                foundArea(mousex, mousey);
-                //toEdgeVec(mousex, mousey, true);
+            }else{/*
+                toEdgeVec(mousex, mousey, true);
+                qDebug() << "toEdgeVec done";
+                initNodeBuffer();
+                qDebug() << "realtime initNodeBuffer done";
+                liveWireDP(startx, starty);
+                qDebug() << "realtime liveWireDP";*/
             }
 
         }
@@ -136,7 +141,6 @@ void MainWindow::drawEdge()
     QColor edgeColor = QColor::fromRgb(255,  0,  0); // red
     QColor borderColor = QColor::fromRgb(0,  255,  0); // green
     int shouldTake = 1; bool canSetEdge = false; bool canSetBorder;
-    qDebug() << "in drawEdge";
     for(int h = 0; h < image->height(); h++){
         for(int w = 0; w < image->width(); w++){
             if (shouldTake < imgarray.vecEdge.count()){
@@ -182,40 +186,24 @@ void MainWindow::drawTempEdge()
     imgscene->addPixmap(QPixmap::fromImage(*tempImage));
     ui->graphicsView->setScene(imgscene);
     ui->graphicsView->resize(image->width() + 10, image->height() + 10);
+    qDebug() << "edge =";
+    imgarray.vecTempEdge = imgarray.vecEdge;
 }
 
 void MainWindow::toEdgeVec(int inputX, int inputY, bool realtime = false)
 {
     int loc;
-    Node locNode;
     MainWindow::minPath(inputX, inputY);
-    qDebug() << "in toEdgeVec";
-    while(!minPathList.empty()){
-        locNode = minPathList.front();
-        minPathList.pop_front();
-        loc = imgarray.vecloc(locNode.column, locNode.row);
-        qDebug() << "toEdgeVec:" << loc;
-
+    if(minPathList.empty()){return;}
+    std::list<Node>::iterator iter;
+    for(iter = minPathList.begin(); iter!= minPathList.end(); iter++){
+        loc = imgarray.vecloc(iter->column, iter->row);
         if(realtime){
             imgarray.vecTempEdge[loc] = true;
         }else {
             imgarray.vecEdge[loc] = true;
         }
     }
-
-    /* to improve, but still bugs
-    std::list<Node>::iterator iter;
-    for(iter = minPathList.begin(); iter!= minPathList.end(); iter++){
-        locNode = *iter;
-        loc = imgarray.vecloc(locNode.column, locNode.row);
-
-        if(realtime){
-            imgarray.vecTempEdge[loc] = true;
-        }else {
-            imgarray.vecEdge[loc] = true;
-        }
-    }*/
-
     if(genBorder(realtime)){
         if(realtime){
             drawTempEdge();

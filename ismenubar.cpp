@@ -204,6 +204,50 @@ void MainWindow::on_actionMin_Path_triggered()
     //to be done: enable the mouse
 }
 
+void MainWindow::on_actionSave_Image_triggered()
+{
+    QString filename = QFileDialog::getSaveFileName(this,
+        tr("Save Image"),
+        "",
+        tr("*.bmp;; *.png;; *.jpg;; *.tif;; *.GIF"));
+    if(filename.isEmpty())
+    {
+        return;
+    }
+    else
+    {
+        if(!(image->save(filename)))
+        {
+            QMessageBox::information(this,
+                tr("Failed to save the image"),
+                tr("Failed to save the image!"));
+            return;
+        }
+    }
+}
+
+void MainWindow::on_actionSave_Mask_triggered()
+{
+    QString filename = QFileDialog::getSaveFileName(this,
+        tr("Save Image"),
+        "",
+        tr("*.bmp;; *.png;; *.jpg;; *.tif;; *.GIF"));
+    if(filename.isEmpty())
+    {
+        return;
+    }
+    else
+    {
+        if(!(image->save(filename)))
+        {
+            QMessageBox::information(this,
+                tr("Failed to save the image"),
+                tr("Failed to save the image!"));
+            return;
+        }
+    }
+}
+
 void MainWindow::on_actionPixel_Node_triggered()
 {
     if(image->isNull()){

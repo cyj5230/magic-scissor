@@ -29,17 +29,12 @@ void MainWindow::initNodeBuffer()
     int imgWidth = image->width();
     int imgHeight = image->height();
     int numNodes = imgWidth * imgHeight;
-    qDebug()<<"total nodes: "<<numNodes;
     nodes = new Node[numNodes];
 
     assignCoords(nodes, imgWidth, imgHeight);
-    qDebug()<<"assginCoords done";
     computeD(nodes, image, imgWidth, imgHeight);
-    qDebug()<<"computeD done";
     double maxD = getMaxD(nodes, imgWidth, imgHeight);
-    qDebug()<<"get maxD:"<<maxD;
     computeCost(nodes, imgWidth, imgHeight, maxD);
-    qDebug()<<"computeCost done";
 }
 
 //return the row and column values of each node
@@ -296,7 +291,7 @@ void MainWindow::liveWireDP(int seedX, int seedY, int expand, double maxCost)
     pq.Insert(&seed);
 
     //while pq is not empty
-    while (pq.GetNumNodes()!=0 && pq.GetNumNodes() < 51905) {
+    while (pq.GetNumNodes()!=0 && count <= this->imgarray.vecEdge.count()) {
 
         Node* minCostNode;
         minCostNode = (Node*)pq.ExtractMin();
@@ -344,7 +339,6 @@ void MainWindow::liveWireDP(int seedX, int seedY, int expand, double maxCost)
                         }
                     }
                 }
-                //nodes[nbX + nbY * width] = nbNode;
             }
 
         }
@@ -356,10 +350,12 @@ void MainWindow::liveWireDP(int seedX, int seedY, int expand, double maxCost)
 void MainWindow::minPath(int inputX, int inputY)
 {
     //insert a list of nodes along the minimum cost path from the seed node to the input node
+
     int inputNodeIndex = inputY * this->image->width() + inputX;
     Node* node = &nodes[inputNodeIndex];
-    while(node->prevNode != nullptr){
+    while(node->prevNode != nullptr && node->getPQIndex() == 0){
         minPathList.push_front(*node);
+        //qDebug() << node->getPQIndex() << minPathList.front().GetCostValue();
         node = node->prevNode;
     }
 }

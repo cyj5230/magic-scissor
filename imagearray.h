@@ -35,9 +35,9 @@ public:
                 this->vecTempBorder.append(false);
             }
         }
-        qDebug() << "Image Size: " << this->width << "x" << this->height;
-        qDebug() << "has alpha channel:" <<image->hasAlphaChannel() << "image format:" << image->format();
-        qDebug() << "pixel number:" << vecEdge.count() << vecBorder.count();
+        //qDebug() << "Image Size: " << this->width << "x" << this->height;
+        //qDebug() << "has alpha channel:" <<image->hasAlphaChannel() << "image format:" << image->format();
+        //qDebug() << "pixel number:" << vecEdge.count() << vecBorder.count();
     }
     bool resetImage(){
         for(int index = 0; index < this->vecEdge.count(); index++){

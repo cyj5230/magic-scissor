@@ -86,6 +86,8 @@ private slots:
     void on_actionCost_Graph_triggered();
     void on_actionPath_Tree_triggered();
     void on_actionMin_Path_triggered();
+    void on_actionSave_Image_triggered();
+    void on_actionSave_Mask_triggered();
 };
 
 #endif // MAINWINDOW_H
