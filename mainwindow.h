@@ -27,7 +27,7 @@ public:
     bool eventFilter(QObject *watched, QEvent *event);
     void mouseNow(QMouseEvent *event);
     void initNodeBuffer();
-    void liveWireDP(int seedX, int seedY, int expand = -1, double maxCost = 0.0000);
+    void liveWireDP(int seedX, int seedY);
     void mouseInfo();
     void minPath(int inputX, int inputY);
 
