@@ -291,66 +291,66 @@ void MainWindow::liveWireDP(int seedX, int seedY, int expand, double maxCost)
     //make seed the root of the minimum path tree ( pointing to NULL )
     seed.SetCostValue(0);
     seed.prevNode = NULL;
-
+    //pnode = seed;
     count++;
     pq.Insert(&seed);
 
     //while pq is not empty
-    while (pq.GetNumNodes()!=0) {
+    while (pq.GetNumNodes()!=0 && pq.GetNumNodes() < 51905) {
+
         Node* minCostNode;
         minCostNode = (Node*)pq.ExtractMin();
         minCostNode->state = EXPANDED;
-
         for(int link = 0; link < 8; link++){
             int* offset = new int[2];
             nbrOffset(link, offset);
-
             int nbX = minCostNode->column + offset[0];
             int nbY = minCostNode->row + offset[1];
 
             delete [] offset;
 
             if((nbX >= 0 && nbX < width) && (nbY >= 0 && nbY < height)){
-                Node nbNode = nodes[nbX + nbY * width];
-
-                if(nbNode.state != EXPANDED){
-                    if(nbNode.state == INITIAL && count < expand){
+                Node *nbNode = &nodes[nbX + nbY * width];
+                if(nbNode->state != EXPANDED){
+                    if(nbNode->state == INITIAL && count < expand){
                         //make q be the predecessor of r ( for the the minimum path tree )
-                        nbNode.prevNode = minCostNode;
-                        nbNode.prevNodeLink = link;//prevNode's link index to the new node
+                        nbNode->prevNode = minCostNode;
+                        nbNode->prevNodeLink = link;//prevNode's link index to the new node
 
                         //set the total cost of r to be the sum of the total cost of q and link cost from q to r as its total cost
-                        nbNode.SetCostValue(minCostNode->totalCost + minCostNode->linkCost[link]);
+                        nbNode->SetCostValue(minCostNode->totalCost + minCostNode->linkCost[link]);
 
-                        if(nbNode.totalCost > maxCost)
-                            maxCost = nbNode.totalCost;
+                        if(nbNode->totalCost > maxCost)
+                            maxCost = nbNode->totalCost;
 
                         //insert r in pq and mark it as ACTIVE
-                        pq.Insert(&nbNode);
-                        nbNode.state = ACTIVE;
-
+                        pq.Insert(nbNode);
+                        nbNode->state = ACTIVE;
                         count++;
                     }
                     else{
                         double tmpCost = minCostNode->totalCost + minCostNode->linkCost[link];
-                        if(tmpCost < nbNode.totalCost){
+                        if(tmpCost < nbNode->totalCost){
 
                             //update q to be the predecessor of r ( for the minimum path tree )
-                            nbNode.prevNode = minCostNode;
-                            nbNode.prevNodeLink = link;//prevNode's link index to the new node
+                            nbNode->prevNode = minCostNode;
+                            nbNode->prevNodeLink = link;//prevNode's link index to the new node
 
                             //update the total cost of r in pq
-                            nbNode.SetCostValue(tmpCost);
+                            nbNode->SetCostValue(tmpCost);
 
                             //Update(DecreaseKey)
-                            pq.DecreaseKey(&nbNode, nbNode);
+                            pq.DecreaseKey(nbNode, *nbNode);
                         }
                     }
                 }
+                //nodes[nbX + nbY * width] = nbNode;
             }
-    }
+
+        }
 
     }
+
 }
 
 void MainWindow::minPath(int inputX, int inputY)
@@ -358,7 +358,7 @@ void MainWindow::minPath(int inputX, int inputY)
     //insert a list of nodes along the minimum cost path from the seed node to the input node
     int inputNodeIndex = inputY * this->image->width() + inputX;
     Node* node = &nodes[inputNodeIndex];
-    while(node->prevNode){
+    while(node->prevNode != nullptr){
         minPathList.push_front(*node);
         node = node->prevNode;
     }

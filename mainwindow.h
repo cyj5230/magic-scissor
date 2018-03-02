@@ -43,6 +43,8 @@ public:
 
     QGraphicsScene *imgscene = new QGraphicsScene;
 
+    imArray getia(){return this->imgarray;}
+
     // constructor functions
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -52,7 +54,7 @@ protected:
     bool genBorder(bool temp);
     void tempPath(int spx, int spy, int epx, int epy, bool realtime);
     bool foundArea(int x, int y);
-    bool useTempPath = true;
+    bool useTempPath = false;
 
 private:
     Ui::MainWindow *ui;
@@ -64,7 +66,7 @@ private:
     imArray imgarray = imArray();
     QString imgFileName;
 
-    Node* nodes;
+    Node* nodes; Node* pnode;
     std::list<Node> minPathList;
     bool undoDisabled = true;
     bool scissorRunning = false;
