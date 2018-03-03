@@ -89,13 +89,12 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
             foundArea(mousex, mousey);
             if(useTempPath){
                 tempPath(startx, starty, mousex, mousey, true);
-            }else{/*
+            }else{
+                /*
                 toEdgeVec(mousex, mousey, true);
-                qDebug() << "toEdgeVec done";
                 initNodeBuffer();
-                qDebug() << "realtime initNodeBuffer done";
                 liveWireDP(startx, starty);
-                qDebug() << "realtime liveWireDP";*/
+                */
             }
 
         }
@@ -186,8 +185,6 @@ void MainWindow::drawTempEdge()
     imgscene->addPixmap(QPixmap::fromImage(*tempImage));
     ui->graphicsView->setScene(imgscene);
     ui->graphicsView->resize(image->width() + 10, image->height() + 10);
-    qDebug() << "edge =";
-    imgarray.vecTempEdge = imgarray.vecEdge;
 }
 
 void MainWindow::toEdgeVec(int inputX, int inputY, bool realtime = false)
@@ -203,7 +200,9 @@ void MainWindow::toEdgeVec(int inputX, int inputY, bool realtime = false)
         }else {
             imgarray.vecEdge[loc] = true;
         }
+
     }
+    minPathList.clear();
     if(genBorder(realtime)){
         if(realtime){
             drawTempEdge();
@@ -220,8 +219,8 @@ bool MainWindow::genBorder(bool temp = false)
     pixnum = this->imgarray.vecBorder.count();
     for(int index = 0; index < pixnum; index++){
         if (!temp && imgarray.vecEdge.at(index)){
-            for(int w = -2; w < 3; w++){
-                for (int h = -2; h < 3; h ++){
+            for(int w = -5; w < 6; w++){
+                for (int h = -5; h < 6; h ++){
                     loc = index + w + h * this->imgarray.getWidth();
                     if(loc <= 0 || loc > pixnum){continue;}
                     isBorder = (!imgarray.vecEdge.at(loc)) && (!imgarray.vecBorder.at(loc));
@@ -231,8 +230,8 @@ bool MainWindow::genBorder(bool temp = false)
                 }
             }
         } else if (temp && imgarray.vecTempEdge.at(index)){
-            for(int w = -2; w < 3; w++){
-                for (int h = -2; h < 3; h ++){
+            for(int w = -5; w < 6; w++){
+                for (int h = -5; h < 6; h ++){
                     loc = index + w + h * this->imgarray.getWidth();
                     if(loc <= 0 || loc > pixnum){continue;}
                     isBorder = (!imgarray.vecTempEdge.at(loc)) && (!imgarray.vecTempBorder.at(loc));

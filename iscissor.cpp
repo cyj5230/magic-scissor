@@ -281,7 +281,7 @@ void MainWindow::liveWireDP(int seedX, int seedY)
     //make seed the root of the minimum path tree ( pointing to NULL )
     seed.SetCostValue(0);
     seed.prevNode = NULL;
-
+    count++;
     pq.Insert(&seed);
 
     //while pq is not empty
@@ -301,7 +301,7 @@ void MainWindow::liveWireDP(int seedX, int seedY)
             if((nbX >= 0 && nbX < width) && (nbY >= 0 && nbY < height)){
                 Node *nbNode = &nodes[nbX + nbY * width];
                 if(nbNode->state != EXPANDED){
-                    if(nbNode->state == INITIAL){
+                    if(nbNode->state == INITIAL && count < imgarray.getPixnum()){
                         //make q be the predecessor of r ( for the the minimum path tree )
                         nbNode->prevNode = minCostNode;
                         nbNode->prevNodeLink = link;//prevNode's link index to the new node
@@ -312,6 +312,7 @@ void MainWindow::liveWireDP(int seedX, int seedY)
                         //insert r in pq and mark it as ACTIVE
                         pq.Insert(nbNode);
                         nbNode->state = ACTIVE;
+                        count++;
                     }
                     else{
                         double tmpCost = minCostNode->totalCost + minCostNode->linkCost[link];
@@ -442,14 +443,8 @@ void MainWindow::makePathTree(int width, int height, int expand)
         int col = seed.column;
         int row = seed.row;
 
-        int radius = 0;
-        if(expand == -1 || expand == width * height){
-            //set the range bigger than the whole picture
-            radius = (int)sqrt(width * width + height * height);
-        }
-        else
-            //Area of a circle: A = pi * r^2
-            radius = (int)sqrt(expand/M_PI);
+        double maxCost = 0.0000;
+        liveWireDP(col, row);
 
         //set all pixels to black
         for (int i = 0; i < debugGraph->width(); i++) {
@@ -462,14 +457,6 @@ void MainWindow::makePathTree(int width, int height, int expand)
         //The back track direction (towards the seed) goes from light yellow to dark yellow
         for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
-                    int disX = (x - col) * (x - col);
-                    int disY = (y - row) * (y - row);
-                    int distance = (int)sqrt(disX + disY);
-
-                    //if the node is out of the expanded range, do nothing
-                    if(distance > radius)
-                        continue;
-
                     int newX = 3 * x + 1;
                     int newY = 3 * y + 1;
                     int nodeIndex = y * width + x;
@@ -477,33 +464,18 @@ void MainWindow::makePathTree(int width, int height, int expand)
                     if(nodes[nodeIndex].totalCost == -1 || nodes[nodeIndex].prevNode == nullptr)
                         break;
 
-                    //find the minPath from prevNode to current node
-                    int link = nodes[nodeIndex].prevNodeLink;
-                    int newPrevX = 3 * nodes[nodeIndex].prevNode->column + 1;
-                    int newPrevY = 3 * nodes[nodeIndex].prevNode->row + 1;
-
-                    int** nb = new int*[2];
-                    for(int i = 0; i < 2; i++){
+                    int** nb = new int*[8];
+                    for(int i = 0; i < 8; i++){
                         nb[i] = new int[2];
-                    }
 
-                    nbrOffset(link, nb[0]);
-                    nbrOffset((link+4)%8, nb[1]);
+                        nbrOffset(i, nb[i]);
 
-                    //set the color of the minPath to yellow
-                    /*
-                     * for example, if link is 7, (link + 4)%8 is 3
-                     *[prevNode]
-                     *          [link 7]
-                     *                  [link 3]
-                     *                          [currentNode]
-                     * link 7 is light yellow
-                     * link 3 is dark yellow
-                     */
-                    debugGraph->setPixel(newPrevX + nb[0][0], newPrevY + nb[0][1], qRgb(255, 255, 0));
-                    debugGraph->setPixel(newX + nb[1][0], newY + nb[1][1], qRgb(127, 127, 0));
+                        //set the yellow color of the neighbors to the cost level
+                        //light yellow: R = 255, G = 255, B = 0
+                        //dark yellow(black): R = 0, G = 0, B = 0
+                        int yellow = 255 - (int)nodes[nodeIndex].totalCost * 255/(maxCost * sqrt(2));
+                        debugGraph->setPixel(newX + nb[i][0], newY + nb[i][1], qRgb(yellow, yellow, 0));
 
-                    for(int i = 0; i < 2; i++){
                         delete [] nb[i];
                     }
                     delete [] nb;
@@ -523,9 +495,44 @@ void MainWindow::makeMinPath(int width, int height){
     //display the path tree on the whole graph
     MainWindow::makePathTree(width, height, -1);
 
-    //display the min path to red dynamically
-    //to be done: no border
-    drawTempEdge();
+    for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int newX = 3 * x + 1;
+                int newY = 3 * y + 1;
+                int nodeIndex = y * width + x;
 
+                if(nodes[nodeIndex].totalCost == -1 || nodes[nodeIndex].prevNode == nullptr)
+                    continue;
+
+                //find the minPath from prevNode to current node
+                int link = nodes[nodeIndex].prevNodeLink;
+                int newPrevX = 3 * nodes[nodeIndex].prevNode->column + 1;
+                int newPrevY = 3 * nodes[nodeIndex].prevNode->row + 1;
+
+                int** nb = new int*[2];
+                for(int i = 0; i < 2; i++){
+                    nb[i] = new int[2];
+                }
+
+                nbrOffset(link, nb[0]);
+                nbrOffset((link+4)%8, nb[1]);
+
+                //set the color of the minPath to red
+                /*
+                 * for example, if link is 7, (link + 4)%8 is 3
+                 *[prevNode]
+                 *          [link 7]
+                 *                  [link 3]
+                 *                          [currentNode]
+                 */
+                debugGraph->setPixel(newPrevX + nb[0][0], newPrevY + nb[0][1], qRgb(255, 0, 0));
+                debugGraph->setPixel(newX + nb[1][0], newY + nb[1][1], qRgb(255, 0, 0));
+
+                for(int i = 0; i < 2; i++){
+                    delete [] nb[i];
+                }
+                delete [] nb;
+            }
+    }
 }
 //====================END OF DEBUG MODE======================

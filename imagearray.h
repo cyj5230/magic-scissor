@@ -14,7 +14,7 @@ class imArray
 {
 public:
     QVarLengthArray<bool> vecEdge, vecBorder, vecTempEdge, vecTempBorder;
-
+    QVarLengthArray<bool> vecInner;
     // input functions
     void setImage(QImage *image){
         this->width = (int)image->width();
@@ -35,6 +35,7 @@ public:
                 this->vecTempBorder.append(false);
             }
         }
+        this->pixnum = this->vecEdge.count();
         //qDebug() << "Image Size: " << this->width << "x" << this->height;
         //qDebug() << "has alpha channel:" <<image->hasAlphaChannel() << "image format:" << image->format();
         //qDebug() << "pixel number:" << vecEdge.count() << vecBorder.count();
@@ -48,6 +49,40 @@ public:
         }
         //only for debug
         return false;
+    }
+    bool findInner(){
+        if(pixnum == 0){return false;}
+        bool finish = false;
+        bool isEdge, isOuter;
+        qDebug() << pixnum;
+        for(int index = 0; index < pixnum; index++){
+            vecInner.append(true);
+        }
+        while(!finish){
+            finish = true;
+            for(int w = 0; w < width; w++){
+                for(int h = 0; h < height; h++){
+                    isEdge =
+                            w - 1 <= 0 || w + 1 >= this->width ||
+                            h - 1 <= 0 || h + 1 >= this->height;
+                    if(isEdge){vecInner[vecloc(w,h)] = false; continue;}
+                    isOuter =
+                             vecEdge[ vecloc(w,h) ]  == false &&
+                            (vecInner[vecloc(w-1,h)] == false ||
+                             vecInner[vecloc(w,h-1)] == false ||
+                             vecInner[vecloc(w+1,h)] == false ||
+                             vecInner[vecloc(w,h+1)] == false) ;
+                    if(isOuter){
+                        if(vecInner[vecloc(w,h)] == true){
+                            vecInner[vecloc(w,h)] = false;
+                            finish = false;
+                        }
+                    }
+
+                }
+            }
+        }
+        return true;
     }
 
     // output functions
@@ -72,13 +107,17 @@ public:
             return 0;
     }
 
+    int getPixnum(){
+        return pixnum;
+    }
+
     // change cordinator to index
     int vecloc(int w, int h){return h * this->width + w;}
 
 private:
     int width, height;
+    int pixnum = 0;
     QVarLengthArray<int> vecRed, vecGreen, vecBlue;
-
 };
 
 

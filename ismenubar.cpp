@@ -229,6 +229,26 @@ void MainWindow::on_actionSave_Contour_triggered()
 
 void MainWindow::on_actionSave_Mask_triggered()
 {
+    QImage *maskImage = new QImage(image->width(), image->height(), QImage::Format_ARGB32);
+    if(finishScissor && imgarray.findInner()){
+        for(int w = 0; w < imgarray.getWidth(); w++){
+            for(int h = 0; h < imgarray.getHeight(); h++){
+                if(imgarray.vecInner.at(imgarray.vecloc(w,h))){
+                    QColor inclr = QColor::fromRgb(imgarray.getRed(imgarray.vecloc(w,h)),
+                                                   imgarray.getGreen(imgarray.vecloc(w,h)),
+                                                   imgarray.getBlue(imgarray.vecloc(w,h)));
+                    maskImage->setPixelColor(w, h, inclr);
+                }else{
+                    maskImage->setPixelColor(w, h, QColor(0,0,0,0));
+                }
+            }
+        }
+    }
+    //*tempImage = mkimage->createMaskFromColor(QColor(0,0,0).rgb(), Qt::MaskOutColor);
+    imgscene->clear();
+    imgscene->addPixmap(QPixmap::fromImage(*maskImage));
+    ui->graphicsView->setScene(imgscene);
+    ui->graphicsView->resize(image->width() + 10, image->height() + 10);
     QString filename = QFileDialog::getSaveFileName(this,
         tr("Save Image"),
         "",
@@ -239,7 +259,7 @@ void MainWindow::on_actionSave_Mask_triggered()
     }
     else
     {
-        if(!(image->save(filename)))
+        if(!(maskImage->save(filename)))
         {
             QMessageBox::information(this,
                 tr("Failed to save the image"),
@@ -495,4 +515,5 @@ void MainWindow::on_actionPixel_Node_triggered()
 
     //to be done: disable the mouse
 }
+
 
