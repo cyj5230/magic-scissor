@@ -41,11 +41,14 @@ public:
         //qDebug() << "pixel number:" << vecEdge.count() << vecBorder.count();
     }
     bool resetImage(){
-        for(int index = 0; index < this->vecEdge.count(); index++){
-            this->vecEdge[index]       = false;
-            this->vecBorder[index]     = false;
-            this->vecTempEdge[index]   = false;
-            this->vecTempBorder[index] = false;
+        if(!vecEdge.isEmpty()){
+            for(int index = 0; index < this->vecEdge.count(); index++){
+                this->vecEdge[index]       = false;
+                this->vecBorder[index]     = false;
+                this->vecTempEdge[index]   = false;
+                this->vecTempBorder[index] = false;
+                this->vecInner[index] = true;
+            }
         }
         //only for debug
         return false;

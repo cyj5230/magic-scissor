@@ -39,6 +39,7 @@ void MainWindow::on_actionCloseImage_triggered(){
     imgscene->clear();
     ui->graphicsView->setScene(imgscene);
     ui->graphicsView->show();
+    imgarray.resetImage();
 }
 
 // Size operations
@@ -244,11 +245,11 @@ void MainWindow::on_actionSave_Mask_triggered()
             }
         }
     }
-    //*tempImage = mkimage->createMaskFromColor(QColor(0,0,0).rgb(), Qt::MaskOutColor);
-    imgscene->clear();
-    imgscene->addPixmap(QPixmap::fromImage(*maskImage));
-    ui->graphicsView->setScene(imgscene);
-    ui->graphicsView->resize(image->width() + 10, image->height() + 10);
+//    //*tempImage = mkimage->createMaskFromColor(QColor(0,0,0).rgb(), Qt::MaskOutColor);
+//    imgscene->clear();
+//    imgscene->addPixmap(QPixmap::fromImage(*maskImage));
+//    ui->graphicsView->setScene(imgscene);
+//    ui->graphicsView->resize(image->width() + 10, image->height() + 10);
     QString filename = QFileDialog::getSaveFileName(this,
         tr("Save Image"),
         "",
