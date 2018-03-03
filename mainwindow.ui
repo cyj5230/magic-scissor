@@ -91,10 +91,19 @@
     <addaction name="actionWork_Mode"/>
     <addaction name="menuDebug_3"/>
    </widget>
+   <widget class="QMenu" name="menuBlur">
+    <property name="title">
+     <string>Blur</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="action3_x_3"/>
+    <addaction name="action5_x_5"/>
+   </widget>
    <addaction name="menuIntelligent_Scissor"/>
    <addaction name="menuMode"/>
    <addaction name="menuEdge"/>
    <addaction name="menuSize"/>
+   <addaction name="menuBlur"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -188,6 +197,16 @@
   <action name="actionPixel_Node">
    <property name="text">
     <string>Pixel Node</string>
+   </property>
+  </action>
+  <action name="action3_x_3">
+   <property name="text">
+    <string>3 x 3</string>
+   </property>
+  </action>
+  <action name="action5_x_5">
+   <property name="text">
+    <string>5 x 5</string>
    </property>
   </action>
  </widget>

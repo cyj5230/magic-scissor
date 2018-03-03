@@ -88,6 +88,8 @@ private slots:
     void on_actionMin_Path_triggered();
     void on_actionSave_Contour_triggered();
     void on_actionSave_Mask_triggered();
+    void on_action3_x_3_triggered();
+    void on_action5_x_5_triggered();
 };
 
 #endif // MAINWINDOW_H

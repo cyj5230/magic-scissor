@@ -44,6 +44,8 @@ public:
     QAction *actionPath_Tree;
     QAction *actionMin_Path;
     QAction *actionPixel_Node;
+    QAction *action3_x_3;
+    QAction *action5_x_5;
     QWidget *centralWidget;
     QGraphicsView *graphicsView;
     QMenuBar *menuBar;
@@ -52,6 +54,7 @@ public:
     QMenu *menuSize;
     QMenu *menuMode;
     QMenu *menuDebug_3;
+    QMenu *menuBlur;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -95,6 +98,10 @@ public:
         actionMin_Path->setObjectName(QStringLiteral("actionMin_Path"));
         actionPixel_Node = new QAction(MainWindow);
         actionPixel_Node->setObjectName(QStringLiteral("actionPixel_Node"));
+        action3_x_3 = new QAction(MainWindow);
+        action3_x_3->setObjectName(QStringLiteral("action3_x_3"));
+        action5_x_5 = new QAction(MainWindow);
+        action5_x_5->setObjectName(QStringLiteral("action5_x_5"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -121,6 +128,8 @@ public:
         menuMode->setObjectName(QStringLiteral("menuMode"));
         menuDebug_3 = new QMenu(menuMode);
         menuDebug_3->setObjectName(QStringLiteral("menuDebug_3"));
+        menuBlur = new QMenu(menuBar);
+        menuBlur->setObjectName(QStringLiteral("menuBlur"));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -133,6 +142,7 @@ public:
         menuBar->addAction(menuMode->menuAction());
         menuBar->addAction(menuEdge->menuAction());
         menuBar->addAction(menuSize->menuAction());
+        menuBar->addAction(menuBlur->menuAction());
         menuIntelligent_Scissor->addSeparator();
         menuIntelligent_Scissor->addAction(actionOpenImage);
         menuIntelligent_Scissor->addAction(actionCloseImage);
@@ -150,6 +160,9 @@ public:
         menuDebug_3->addAction(actionCost_Graph);
         menuDebug_3->addAction(actionPath_Tree);
         menuDebug_3->addAction(actionMin_Path);
+        menuBlur->addSeparator();
+        menuBlur->addAction(action3_x_3);
+        menuBlur->addAction(action5_x_5);
 
         retranslateUi(MainWindow);
 
@@ -176,11 +189,14 @@ public:
         actionPath_Tree->setText(QApplication::translate("MainWindow", "Path Tree", nullptr));
         actionMin_Path->setText(QApplication::translate("MainWindow", "Min Path", nullptr));
         actionPixel_Node->setText(QApplication::translate("MainWindow", "Pixel Node", nullptr));
+        action3_x_3->setText(QApplication::translate("MainWindow", "3 x 3", nullptr));
+        action5_x_5->setText(QApplication::translate("MainWindow", "5 x 5", nullptr));
         menuIntelligent_Scissor->setTitle(QApplication::translate("MainWindow", "File", nullptr));
         menuEdge->setTitle(QApplication::translate("MainWindow", "Edge", nullptr));
         menuSize->setTitle(QApplication::translate("MainWindow", "Size", nullptr));
         menuMode->setTitle(QApplication::translate("MainWindow", "Mode", nullptr));
         menuDebug_3->setTitle(QApplication::translate("MainWindow", "Debug", nullptr));
+        menuBlur->setTitle(QApplication::translate("MainWindow", "Blur", nullptr));
     } // retranslateUi
 
 };

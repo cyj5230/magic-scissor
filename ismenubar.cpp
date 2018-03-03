@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QMatrix3x3>
 
 // Rewrite on_actionX_triggered slot functions
 
@@ -246,6 +247,228 @@ void MainWindow::on_actionSave_Mask_triggered()
             return;
         }
     }
+}
+
+void MainWindow::on_action3_x_3_triggered()
+{
+    if(image->isNull())
+        return;
+
+    QImage blur = QPixmap::fromImage(*image).toImage();
+
+    QMatrix3x3 kernel;
+    kernel(0, 0) = 1; kernel(0, 1) = 2; kernel(0, 2) = 1;
+    kernel(1, 0) = 2; kernel(1, 1) = 4; kernel(1, 2) = 2;
+    kernel(2, 0) = 1; kernel(2, 1) = 2; kernel(2, 2) = 1;
+    float kernel_sum = 16.0;
+
+
+    for(int i=1; i<image->width()-1; i++)
+    {
+        for(int j=1; j<image->height()-1; j++)
+        {
+            float red = 0, green = 0, blue = 0;
+
+            // *****************************************************
+            red =
+                    kernel(0, 0) * qRed(image->pixel(i+1, j+1)) +
+                    kernel(0, 1) * qRed(image->pixel(i, j+1)) +
+                    kernel(0, 2) * qRed(image->pixel(i-1, j+1)) +
+
+                    kernel(1, 0) * qRed(image->pixel(i+1, j)) +
+                    kernel(1, 1) * qRed(image->pixel(i, j)) +
+                    kernel(1, 2) * qRed(image->pixel(i-1, j)) +
+
+                    kernel(2, 0) * qRed(image->pixel(i+1, j-1)) +
+                    kernel(2, 1) * qRed(image->pixel(i, j-1)) +
+                    kernel(2, 2) * qRed(image->pixel(i-1, j-1));
+
+            // *****************************************************
+            green =
+                    kernel(0, 0) * qGreen(image->pixel(i+1, j+1)) +
+                    kernel(0, 1) * qGreen(image->pixel(i, j+1)) +
+                    kernel(0, 2) * qGreen(image->pixel(i-1, j+1)) +
+
+                    kernel(1, 0) * qGreen(image->pixel(i+1, j)) +
+                    kernel(1, 1) * qGreen(image->pixel(i, j)) +
+                    kernel(1, 2) * qGreen(image->pixel(i-1, j)) +
+
+                    kernel(2, 0) * qGreen(image->pixel(i+1, j-1)) +
+                    kernel(2, 1) * qGreen(image->pixel(i, j-1)) +
+                    kernel(2, 2) * qGreen(image->pixel(i-1, j-1));
+
+            // *****************************************************
+            blue =
+                    kernel(0, 0) * qBlue(image->pixel(i+1, j+1)) +
+                    kernel(0, 1) * qBlue(image->pixel(i, j+1)) +
+                    kernel(0, 2) * qBlue(image->pixel(i-1, j+1)) +
+
+                    kernel(1, 0) * qBlue(image->pixel(i+1, j)) +
+                    kernel(1, 1) * qBlue(image->pixel(i, j)) +
+                    kernel(1, 2) * qBlue(image->pixel(i-1, j)) +
+
+                    kernel(2, 0) * qBlue(image->pixel(i+1, j-1)) +
+                    kernel(2, 1) * qBlue(image->pixel(i, j-1)) +
+                    kernel(2, 2) * qBlue(image->pixel(i-1, j-1));
+
+            blur.setPixel(i,j, qRgb(red/kernel_sum, green/kernel_sum, blue/kernel_sum));
+
+        }
+    }
+
+    *image = blur;
+    imgarray.setImage(image);
+    imgscene->clear();
+    imgscene->addPixmap(QPixmap::fromImage(*image));
+    imgscene->installEventFilter(this);
+    ui->graphicsView->setScene(imgscene);
+    ui->graphicsView->resize(image->width() + 10, image->height() + 10);
+    ui->graphicsView->show();
+    initNodeBuffer();
+}
+
+void MainWindow::on_action5_x_5_triggered()
+{
+    if(image->isNull())
+        return;
+
+    QImage blur = QPixmap::fromImage(*image).toImage();
+
+    int** kernel = new int*[5];
+    for(int k = 0; k < 5; k++){
+        kernel[k] = new int[5];
+    }
+    kernel[0][0] = kernel[0][4] = kernel[4][0] = kernel[4][4] = 2;
+    kernel[0][1] = kernel[0][3] = kernel[1][0] = kernel[1][4] = 4;
+    kernel[3][0] = kernel[3][4] = kernel[4][1] = kernel[4][3] = 4;
+    kernel[0][2] = kernel[2][0] = kernel[2][4] = kernel[4][2] = 5;
+    kernel[1][1] = kernel[1][3] = kernel[3][1] = kernel[3][3] = 9;
+    kernel[1][2] = kernel[2][1] = kernel[2][3] = kernel[3][2] = 12;
+    kernel[2][2] = 15;
+    float kernel_sum = 159.0;
+
+
+    for(int i=2; i<image->width()-2; i++)
+    {
+        for(int j=2; j<image->height()-2; j++)
+        {
+            float red = 0, green = 0, blue = 0;
+
+            // *****************************************************
+            red =
+                    kernel[0][0] * qRed(image->pixel(i-2, j-2)) +
+                    kernel[0][1] * qRed(image->pixel(i-1, j-2)) +
+                    kernel[0][2] * qRed(image->pixel(i, j-2)) +
+                    kernel[0][3] * qRed(image->pixel(i+1, j-2)) +
+                    kernel[0][4] * qRed(image->pixel(i+2, j-2)) +
+
+                    kernel[1][0] * qRed(image->pixel(i-2, j-1)) +
+                    kernel[1][1] * qRed(image->pixel(i-1, j-1)) +
+                    kernel[1][2] * qRed(image->pixel(i, j-1)) +
+                    kernel[1][3] * qRed(image->pixel(i+1, j-1)) +
+                    kernel[1][4] * qRed(image->pixel(i+2, j-1)) +
+
+                    kernel[2][0] * qRed(image->pixel(i-2, j)) +
+                    kernel[2][1] * qRed(image->pixel(i-1, j)) +
+                    kernel[2][2] * qRed(image->pixel(i, j)) +
+                    kernel[2][3] * qRed(image->pixel(i+1, j)) +
+                    kernel[2][4] * qRed(image->pixel(i+2, j)) +
+
+                    kernel[3][0] * qRed(image->pixel(i-2, j+1)) +
+                    kernel[3][1] * qRed(image->pixel(i-1, j+1)) +
+                    kernel[3][2] * qRed(image->pixel(i, j+1)) +
+                    kernel[3][3] * qRed(image->pixel(i+1, j+1)) +
+                    kernel[3][4] * qRed(image->pixel(i+2, j+1)) +
+
+                    kernel[4][0] * qRed(image->pixel(i-2, j+2)) +
+                    kernel[4][1] * qRed(image->pixel(i-1, j+2)) +
+                    kernel[4][2] * qRed(image->pixel(i, j+2)) +
+                    kernel[4][3] * qRed(image->pixel(i+1, j+2)) +
+                    kernel[4][4] * qRed(image->pixel(i+2, j+2));
+
+            // *****************************************************
+            green =
+                    kernel[0][0] * qGreen(image->pixel(i-2, j-2)) +
+                    kernel[0][1] * qGreen(image->pixel(i-1, j-2)) +
+                    kernel[0][2] * qGreen(image->pixel(i, j-2)) +
+                    kernel[0][3] * qGreen(image->pixel(i+1, j-2)) +
+                    kernel[0][4] * qGreen(image->pixel(i+2, j-2)) +
+
+                    kernel[1][0] * qGreen(image->pixel(i-2, j-1)) +
+                    kernel[1][1] * qGreen(image->pixel(i-1, j-1)) +
+                    kernel[1][2] * qGreen(image->pixel(i, j-1)) +
+                    kernel[1][3] * qGreen(image->pixel(i+1, j-1)) +
+                    kernel[1][4] * qGreen(image->pixel(i+2, j-1)) +
+
+                    kernel[2][0] * qGreen(image->pixel(i-2, j)) +
+                    kernel[2][1] * qGreen(image->pixel(i-1, j)) +
+                    kernel[2][2] * qGreen(image->pixel(i, j)) +
+                    kernel[2][3] * qGreen(image->pixel(i+1, j)) +
+                    kernel[2][4] * qGreen(image->pixel(i+2, j)) +
+
+                    kernel[3][0] * qGreen(image->pixel(i-2, j+1)) +
+                    kernel[3][1] * qGreen(image->pixel(i-1, j+1)) +
+                    kernel[3][2] * qGreen(image->pixel(i, j+1)) +
+                    kernel[3][3] * qGreen(image->pixel(i+1, j+1)) +
+                    kernel[3][4] * qGreen(image->pixel(i+2, j+1)) +
+
+                    kernel[4][0] * qGreen(image->pixel(i-2, j+2)) +
+                    kernel[4][1] * qGreen(image->pixel(i-1, j+2)) +
+                    kernel[4][2] * qGreen(image->pixel(i, j+2)) +
+                    kernel[4][3] * qGreen(image->pixel(i+1, j+2)) +
+                    kernel[4][4] * qGreen(image->pixel(i+2, j+2));
+
+            // *****************************************************
+            blue =
+                    kernel[0][0] * qBlue(image->pixel(i-2, j-2)) +
+                    kernel[0][1] * qBlue(image->pixel(i-1, j-2)) +
+                    kernel[0][2] * qBlue(image->pixel(i, j-2)) +
+                    kernel[0][3] * qBlue(image->pixel(i+1, j-2)) +
+                    kernel[0][4] * qBlue(image->pixel(i+2, j-2)) +
+
+                    kernel[1][0] * qBlue(image->pixel(i-2, j-1)) +
+                    kernel[1][1] * qBlue(image->pixel(i-1, j-1)) +
+                    kernel[1][2] * qBlue(image->pixel(i, j-1)) +
+                    kernel[1][3] * qBlue(image->pixel(i+1, j-1)) +
+                    kernel[1][4] * qBlue(image->pixel(i+2, j-1)) +
+
+                    kernel[2][0] * qBlue(image->pixel(i-2, j)) +
+                    kernel[2][1] * qBlue(image->pixel(i-1, j)) +
+                    kernel[2][2] * qBlue(image->pixel(i, j)) +
+                    kernel[2][3] * qBlue(image->pixel(i+1, j)) +
+                    kernel[2][4] * qBlue(image->pixel(i+2, j)) +
+
+                    kernel[3][0] * qBlue(image->pixel(i-2, j+1)) +
+                    kernel[3][1] * qBlue(image->pixel(i-1, j+1)) +
+                    kernel[3][2] * qBlue(image->pixel(i, j+1)) +
+                    kernel[3][3] * qBlue(image->pixel(i+1, j+1)) +
+                    kernel[3][4] * qBlue(image->pixel(i+2, j+1)) +
+
+                    kernel[4][0] * qBlue(image->pixel(i-2, j+2)) +
+                    kernel[4][1] * qBlue(image->pixel(i-1, j+2)) +
+                    kernel[4][2] * qBlue(image->pixel(i, j+2)) +
+                    kernel[4][3] * qBlue(image->pixel(i+1, j+2)) +
+                    kernel[4][4] * qBlue(image->pixel(i+2, j+2));
+
+            blur.setPixel(i,j, qRgb(red/kernel_sum, green/kernel_sum, blue/kernel_sum));
+
+        }
+    }
+
+    for(int l = 0; l < 5; l++){
+        delete [] kernel[l];
+    }
+    delete [] kernel;
+
+    *image = blur;
+    imgarray.setImage(image);
+    imgscene->clear();
+    imgscene->addPixmap(QPixmap::fromImage(*image));
+    imgscene->installEventFilter(this);
+    ui->graphicsView->setScene(imgscene);
+    ui->graphicsView->resize(image->width() + 10, image->height() + 10);
+    ui->graphicsView->show();
+    initNodeBuffer();
 }
 
 void MainWindow::on_actionPixel_Node_triggered()
