@@ -90,11 +90,11 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
             if(useTempPath){
                 tempPath(startx, starty, mousex, mousey, true);
             }else{
-                /*
-                toEdgeVec(mousex, mousey, true);
-                initNodeBuffer();
-                liveWireDP(startx, starty);
-                */
+
+                //                toEdgeVec(mousex, mousey, true);
+                //                initNodeBuffer();
+                //                liveWireDP(startx, starty);
+
             }
 
         }
